@@ -5,7 +5,7 @@ export function parseLium(
   observedAt: string,
   sourceUrl: string,
 ): Rate[] {
-  const count = markdown.match(/(\d+) \/ (\d+) Available Pods/);
+  const count = markdown.match(/(\d+) \/ (?:(\d+) )?Available Pods/);
   if (!count) throw new Error("Lium visible pod count missing");
   const expectedCards = [...markdown.matchAll(/(?:^|\n)\d+X\s+\[\*\*/g)].length;
   const rates: Rate[] = [];
@@ -40,7 +40,7 @@ export function parseLium(
       ramGb: Number(ram.replaceAll(",", "")),
       region,
       plan,
-      billing: "On-demand",
+      billing: /^SPOT$/m.test(body) ? "Spot" : "On-demand",
       commitment: "None",
       currency: "USD",
       amount,
@@ -49,7 +49,7 @@ export function parseLium(
       priceType: "Exact",
       availability: "Available",
       evidence: m[0],
-      notes: `Visible marketplace pod ${podId}; source renders ${expectedCards} cards while its counter says ${count[1]} of ${count[2]} available pods. This is a partial snapshot, not exhaustive inventory. VRAM is source-reported total divided by GPU count, not nominal model memory. ${/Reduced power limit/.test(body) ? "Reduced power limit. " : ""}Availability is the source snapshot.`,
+      notes: `Visible marketplace pod ${podId}; source renders ${expectedCards} cards while its counter says ${count[1]} available pods${count[2] ? ` of ${count[2]} total` : "; total is not reported"}. This is a partial snapshot, not exhaustive inventory. VRAM is source-reported total divided by GPU count, not nominal model memory. ${/^SPOT$/m.test(body) ? "Spot pod; the provider can reclaim it. " : ""}${/Reduced power limit/.test(body) ? "Reduced power limit. " : ""}Availability is the source snapshot.`,
       sourceUrl,
       observedAt,
       collectionMethod: "Table parser",

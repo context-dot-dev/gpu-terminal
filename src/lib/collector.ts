@@ -358,7 +358,7 @@ export async function collectProvider(provider: Provider) {
           : provider.id === "cloudru" && !rates.length
             ? cloudRuNoRatesReason
             : provider.id === "computegpu" && !rates.length
-              ? "Hourly listing prices found, but the source does not establish a per-GPU basis or minimum GPU count; excluded from per-GPU comparisons"
+              ? "GPU listing prices are estimated or lack an explicit per-GPU basis; excluded from per-GPU comparisons"
               : provider.id === "valdi"
                 ? `${rates.length} reserved GPU quotes from inventory page 1; minimum orders and commitments retained`
                 : `${rates.length} header-validated GPU rates`,

@@ -6,6 +6,8 @@ export function parseEdgevana(
   observedAt: string,
   sourceUrl: string,
 ): Rate[] {
+  if (markdown.includes("We're doing scheduled maintenance on our platform."))
+    throw new Error("Source Edgevana is undergoing scheduled maintenance; retained the last successful observation");
   const count = markdown.match(/(\d+) of (\d+) configurations/);
   const cards = [
     ...markdown.matchAll(

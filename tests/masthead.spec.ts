@@ -16,9 +16,11 @@ for (const viewport of [
     const header = page.locator("header.terminal-masthead");
     await expect(header).toHaveCSS("display", "flex");
     const brand = header.getByRole("link", {
-      name: "GPU ATLAS COMPUTE MARKETS",
+      name: "gpu-terminal COMPUTE MARKETS",
       exact: true,
     });
+    await expect(page).toHaveTitle("gpu-terminal — GPU Cloud Price Monitor");
+    await expect(brand).toContainText("gpu-terminal");
     await expect(brand).toHaveCSS("font-family", /Georgia/);
     const elements = [
       brand,

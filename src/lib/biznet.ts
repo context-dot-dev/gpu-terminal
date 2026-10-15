@@ -13,13 +13,14 @@ export function parseBiznet(
       /^[- ]*#### ([1-8])x NVIDIA H200\s*\n([\s\S]*?)(?=^[- ]*#### |^## |$(?![\s\S]))/gm,
     ),
   ];
-  if (cards.length !== 8 || new Set(cards.map((m) => m[1])).size !== 8)
+  if (new Set(cards.map((m) => m[1])).size !== 8)
     throw new Error(
       "Source Biznet does not contain eight distinct GPU configurations",
     );
-  return cards.map((card) => {
+  const rates = new Map<number, Rate>();
+  for (const card of cards) {
     const price =
-      /^[ \t]*(?:~Rp\d{1,3}(?:\.\d{3})*~[ \t]+)?Rp(\d{1,3}(?:\.\d{3})*)[ \t]*\n\s*\/ jam[ \t]*(?:\n|$)/m.exec(
+      /^[ \t]*(?:\*\*)?(?:~Rp\d{1,3}(?:\.\d{3})*~[ \t]+)?Rp(\d{1,3}(?:\.\d{3})*)\s*\/ [Jj]am(?:\*\*)?[ \t]*(?:\n|$)/m.exec(
         card[2],
       );
     if (!price)
@@ -28,8 +29,14 @@ export function parseBiznet(
       gpuCount = Number(card[1]);
     if (!(amount > 0))
       throw new Error("Source Biznet hourly price must be positive");
+    const existing = rates.get(gpuCount);
+    if (existing) {
+      if (existing.amount !== amount)
+        throw new Error("Source Biznet repeated GPU configurations disagree on price");
+      continue;
+    }
     const plan = `NEO GPU ${gpuCount}x NVIDIA H200`;
-    return {
+    rates.set(gpuCount, {
       id: createHash("sha256")
         .update(
           JSON.stringify([
@@ -61,9 +68,10 @@ export function parseBiznet(
       collectionMethod: "Table parser",
       evidence: card[0].trim(),
       notes:
-        "Current published promotional price per whole GPU instance per hour (jam). Crossed-out price excluded. GPU memory and host resources are not available in the captured table. Discount duration and tax treatment are not specified; availability is not verified.",
+        "Published price per whole GPU instance per hour (jam). Crossed-out prices excluded. GPU memory, host resources, tax treatment and availability are not verified.",
       sourceUrl,
       observedAt,
-    } satisfies Rate;
-  });
+    });
+  }
+  return [...rates.values()];
 }

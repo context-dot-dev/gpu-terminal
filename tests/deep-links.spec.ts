@@ -167,7 +167,7 @@ test("typing, sharing, reset and modified tab clicks preserve the intended URL",
   ).toHaveAttribute("aria-selected", "true");
   await popup.close();
   await page
-    .getByRole("link", { name: "GPU ATLAS COMPUTE MARKETS", exact: true })
+    .getByRole("link", { name: "gpu-terminal COMPUTE MARKETS", exact: true })
     .click();
   await expect(page).toHaveURL(/\/$/);
   await expect(

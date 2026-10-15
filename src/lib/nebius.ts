@@ -41,7 +41,10 @@ export function parseNebius(
       )
         throw new Error("Source Nebius spot unit is ambiguous");
     } else {
-      if (header.length < 4 || header[3] !== "On-demand, GPU-hour")
+      if (
+        header.length < 4 ||
+        !["On-demand, GPU-hour", "GPU-hour"].includes(header[3])
+      )
         throw new Error("Source Nebius on-demand unit is ambiguous");
       if (header.length === 5) {
         const match = header[4].match(/^GPU-hour \(Effective (.+)\)$/);

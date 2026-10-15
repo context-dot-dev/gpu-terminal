@@ -21,7 +21,7 @@ test("root stays canonical and home, Back and Forward restore matching markets",
     page.locator('[aria-label="GPU price monitoring"]'),
   ).toContainText("H200 price history");
   await page
-    .getByRole("link", { name: "GPU ATLAS COMPUTE MARKETS", exact: true })
+    .getByRole("link", { name: "gpu-terminal COMPUTE MARKETS", exact: true })
     .click();
   await expect(page).toHaveURL(/\/$/);
   await expect(family).toContainText("H100");

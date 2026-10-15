@@ -968,7 +968,7 @@ function MarketDashboard({
       <header className="terminal-masthead">
         <Link
           href="/"
-          aria-label="GPU ATLAS COMPUTE MARKETS"
+          aria-label="gpu-terminal COMPUTE MARKETS"
           prefetch={false}
           onClick={(event) => {
             if (
@@ -989,7 +989,7 @@ function MarketDashboard({
           className={cn(buttonVariants({ variant: "ghost" }), "masthead-brand")}
         >
           <Cpu data-icon="inline-start" strokeWidth={1.2} />
-          <span>GPU Atlas</span>
+          <span>gpu-terminal</span>
         </Link>
         <MarketSearch
           rates={rates}
@@ -1858,7 +1858,7 @@ function MarketDashboard({
           </TabsContent>
         </div>
         <footer className="flex flex-wrap justify-between gap-3 pt-2 text-xs text-muted-foreground">
-          <span>GPU Atlas · First-party pricing, independently collected</span>
+          <span>gpu-terminal · First-party pricing, independently collected</span>
           <span>
             Source checks run on schedule · Auto-sync 30s · Snapshot{" "}
             {mounted
@@ -2145,7 +2145,7 @@ function MarketDashboard({
       <Sheet open={method} onOpenChange={setMethod}>
         <SheetContent className="overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-xl">
           <SheetHeader>
-            <SheetTitle>How GPU Atlas compares prices</SheetTitle>
+            <SheetTitle>How gpu-terminal compares prices</SheetTitle>
             <SheetDescription>
               Transparent inputs. Explicit limits.
             </SheetDescription>
