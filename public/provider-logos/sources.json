@@ -1,0 +1,860 @@
+{
+  "1legion": {
+    "domain": "1legion.com",
+    "source": "https://media.brand.dev/eef27666-241c-4bea-bf5b-f7e82e519b85.png"
+  },
+  "acecloud": {
+    "domain": "acecloud.ai",
+    "source": "https://media.brand.dev/a70207ea-fc63-4bc0-8a85-c5b2a85fdee6.png"
+  },
+  "aethir": {
+    "domain": "aethir.com",
+    "source": "https://media.brand.dev/506ed9e9-1ae2-45c7-8649-2f2130fd7942.svg"
+  },
+  "aieev": {
+    "domain": "aieev.com",
+    "source": "https://media.brand.dev/81521a2d-e678-491e-9e0a-7cc77f9d199a.svg"
+  },
+  "aigalaxy": {
+    "domain": "ai-galaxy.com",
+    "source": "https://media.brand.dev/0cb136fa-55c7-420b-b6b2-3077b0769571.svg"
+  },
+  "akamai": {
+    "domain": "linode.com",
+    "source": "https://media.brand.dev/40ca8e0d-03af-4804-ac6f-9ee4cc8088f1.png"
+  },
+  "akash": {
+    "domain": "akash.network",
+    "source": "https://media.brand.dev/cd472f77-e67d-4de4-ae8a-21e4870d77fc.svg"
+  },
+  "alibaba": {
+    "domain": "alibabacloud.com",
+    "source": "https://media.brand.dev/0a8e6a43-3d68-496a-a104-59f1f93d5fb1.png"
+  },
+  "anthropic": {
+    "domain": "platform.claude.com",
+    "source": "https://media.brand.dev/d2b61f58-5aa8-4a21-8d6b-b63be3f74405.svg"
+  },
+  "aquanode": {
+    "domain": "aquanode.io",
+    "source": "https://media.brand.dev/07bae5e9-8492-4a42-8fe4-0111c9c7f6e2.png"
+  },
+  "arubacloud": {
+    "domain": "arubacloud.com",
+    "source": "https://media.brand.dev/fefe93ff-14ed-4b54-988c-008b7f899195.png"
+  },
+  "atlanticnet": {
+    "domain": "atlantic.net",
+    "source": "https://media.brand.dev/ef1fc5ec-0716-40e1-a165-5fc990632616.png"
+  },
+  "atlas": {
+    "domain": "atlascloud.ai",
+    "source": "https://media.brand.dev/f8b25c6a-42d8-4505-a719-1de862cc2f60.png"
+  },
+  "atmoscompute": {
+    "domain": "atmoscompute.com",
+    "source": "https://media.brand.dev/30c88399-b0b3-4472-bcd2-84244b4344a9.svg"
+  },
+  "autodl": {
+    "domain": "autodl.com",
+    "source": "https://media.brand.dev/7ac3ba08-1681-4a03-ad9e-9fa5d7883ae6.png"
+  },
+  "aws": {
+    "domain": "aws.amazon.com",
+    "source": "https://media.brand.dev/629ee7f2-5e85-466b-8365-521e8cff109b.png"
+  },
+  "azure": {
+    "domain": "azure.microsoft.com",
+    "source": "https://media.brand.dev/27566518-dea2-426d-8d80-eb5fae16b603.png"
+  },
+  "baseten": {
+    "domain": "baseten.co",
+    "source": "https://media.brand.dev/fc6ef16f-9e05-456f-ba47-d062cf9c65f8.png"
+  },
+  "beam": {
+    "domain": "beam.cloud",
+    "source": "https://media.brand.dev/f6cc2edd-ce62-49d3-bf84-a1276a523047.svg"
+  },
+  "bentaus": {
+    "domain": "bentaus.com",
+    "source": "https://media.brand.dev/03286358-e3be-4f8c-99b5-1f3b1891abd2.png"
+  },
+  "bentocloud": {
+    "domain": "modular.com",
+    "source": "https://media.brand.dev/aa9dcd24-1550-413d-b05b-a76a87834d01.svg"
+  },
+  "beyondpl": {
+    "domain": "beyond.pl",
+    "source": "https://media.brand.dev/43d3b60c-44fd-4cdf-953f-d9fdf5f5b64f.png"
+  },
+  "biznetgio": {
+    "domain": "biznetgio.com",
+    "source": "https://media.brand.dev/050b5e99-a060-4e60-a3bf-651b17f93ad3.svg"
+  },
+  "bluelobstercloud": {
+    "domain": "bluelobster.ai",
+    "source": "https://media.brand.dev/059a7d2c-9728-4d0c-b3e8-b40262677ba0.png"
+  },
+  "boostrun": {
+    "domain": "boostrun.com",
+    "source": "https://media.brand.dev/b7453040-3cd6-467b-8187-ff35688100bd.jpg"
+  },
+  "breezehost": {
+    "domain": "breezehost.io",
+    "source": "https://media.brand.dev/3595010c-8e7a-4cde-ba39-3620e83fa846.png"
+  },
+  "cambridgenexus": {
+    "domain": "cambridgenexus.com",
+    "source": "https://media.brand.dev/8733c525-774a-4ce7-821d-d8dbc63ea114.svg"
+  },
+  "canopy": {
+    "domain": "canopywave.com",
+    "source": "https://media.brand.dev/b06c99a2-c43b-4755-9dd1-2ac1e632c1fc.png"
+  },
+  "cassavaai": {
+    "domain": "cassava.ai",
+    "source": "https://media.brand.dev/ae100025-5d0d-4386-bf8b-d1d24c47bb83.svg"
+  },
+  "cephalon": {
+    "domain": "cephalon.ai",
+    "source": "https://media.brand.dev/8035e907-242b-406b-926f-7c98cac92aa6.png"
+  },
+  "cerebras": {
+    "domain": "cerebras.ai",
+    "source": "https://media.brand.dev/22df2f5b-6073-4b8c-bb22-58055de36df4.png"
+  },
+  "cerebrium": {
+    "domain": "cerebrium.ai",
+    "source": "https://media.brand.dev/5188b67d-b788-4d25-a482-c575948c2698.png"
+  },
+  "cherryservers": {
+    "domain": "cherryservers.com",
+    "source": "https://media.brand.dev/21a82a51-b733-43ca-9189-34fc716d32ea.png"
+  },
+  "chinatelecomcloud": {
+    "domain": "ctyun.cn",
+    "source": "https://media.brand.dev/f2921f92-30fd-47ab-b6c9-6f7ed9d77392.jpg"
+  },
+  "civo": {
+    "domain": "civo.com",
+    "source": "https://media.brand.dev/beb315cf-5b30-4c2c-b13b-2c3ec0da2af3.svg"
+  },
+  "clore": {
+    "domain": "clore.ai",
+    "source": "https://media.brand.dev/83da7842-4cb1-4ad3-8ae6-755699b548fc.png"
+  },
+  "cloudferro": {
+    "domain": "cloudferro.com",
+    "source": "https://media.brand.dev/51696a26-8ab9-46b5-8ade-4b4cacbc680d.png"
+  },
+  "cloudgpu": {
+    "domain": "cloudgpu.app",
+    "source": "https://media.brand.dev/49fcbbca-dc37-4311-9c21-4d8eb96fbe61.svg"
+  },
+  "cloudrift": {
+    "domain": "cloudrift.ai",
+    "source": "https://media.brand.dev/af03d203-768f-439e-a8e4-83f6ee9a2629.svg"
+  },
+  "cloudru": {
+    "domain": "cloud.ru",
+    "source": "https://media.brand.dev/894c4d53-3fb5-464e-8836-20781fdc3cd8.svg"
+  },
+  "cohere": {
+    "domain": "cohere.com",
+    "source": "https://media.brand.dev/4df07244-38ce-4f26-88f1-ebdac47b1a3b.png"
+  },
+  "computecheap": {
+    "domain": "compute.cheap",
+    "source": "https://media.brand.dev/0bc4c9ab-53e3-4e12-a85d-51548ff473e0.png"
+  },
+  "computeexchange": {
+    "domain": "compute.exchange",
+    "source": "https://media.brand.dev/43a99201-e7fb-4dad-96b7-d74f169aced1.svg"
+  },
+  "computegpu": {
+    "domain": "computegpu.com",
+    "source": "https://media.brand.dev/226d88a2-92fb-4e97-8e5a-2d6f0437b1d7.png"
+  },
+  "contabo": {
+    "domain": "contabo.com",
+    "source": "https://media.brand.dev/5196bf0e-c2d5-4360-bd27-729619ed927b.png"
+  },
+  "coreweave": {
+    "domain": "coreweave.com",
+    "source": "https://media.brand.dev/fbf58a27-e724-4bda-95ad-b30e6c742195.png"
+  },
+  "corvex": {
+    "domain": "corvex.ai",
+    "source": "https://media.brand.dev/78be6555-ead6-405a-8ac0-febfa8af6676.png"
+  },
+  "crusoe": {
+    "domain": "crusoe.ai",
+    "source": "https://media.brand.dev/f717379a-4ad9-4450-ac36-9d88d78ee82c.png"
+  },
+  "ctrls": {
+    "domain": "ctrls.com",
+    "source": "https://media.brand.dev/0a6cefb2-e2fe-4c05-9782-420ffea61b01.png"
+  },
+  "cudo": {
+    "domain": "cudocompute.com",
+    "source": "https://media.brand.dev/cf1c6c08-4bcd-4fa6-8562-697873b5de4a.webp"
+  },
+  "cyfuture": {
+    "domain": "cyfuture.ai",
+    "source": "https://media.brand.dev/655ffbc8-8833-4a86-add7-984f85eebe04.png"
+  },
+  "databasemart": {
+    "domain": "gpu-mart.com",
+    "source": "https://media.brand.dev/434db9a9-ee7e-4e5a-b813-3341ffc022ad.png"
+  },
+  "daytona": {
+    "domain": "daytona.io",
+    "source": "https://media.brand.dev/959df4ef-7fe5-4c97-a57e-c14799b37a35.png"
+  },
+  "deepinfra": {
+    "domain": "deepinfra.com",
+    "source": "https://media.brand.dev/6a4c227d-fea8-4fee-be65-da08477ab9a4.png"
+  },
+  "deepseek": {
+    "domain": "api-docs.deepseek.com",
+    "source": "https://media.brand.dev/7d40c762-a5aa-46a6-81ea-4d26138aa3e4.png"
+  },
+  "denvr": {
+    "domain": "denvr.com",
+    "source": "https://media.brand.dev/d32e420f-b608-4196-b384-bfbe30e6f3e8.png"
+  },
+  "digitalocean": {
+    "domain": "digitalocean.com",
+    "source": "https://media.brand.dev/aeb4c919-6001-4009-bbe7-ac68ae90d4f4.svg"
+  },
+  "dihuni": {
+    "domain": "dihuni.com",
+    "source": "https://media.brand.dev/4a3167fa-5a49-44bd-a76f-44f27a9fc105.png"
+  },
+  "dispersed": {
+    "domain": "dispersed.com",
+    "source": "https://media.brand.dev/a9f41c88-ab8c-4f58-b3fa-efb54c661564.png"
+  },
+  "e2enetworks": {
+    "domain": "e2enetworks.com",
+    "source": "https://media.brand.dev/b235f235-7de9-460c-8004-a486b1b6cfde.png"
+  },
+  "ecohash": {
+    "domain": "ecohash.com",
+    "source": "https://media.brand.dev/128cc474-4171-4232-8a50-94063a79223c.svg"
+  },
+  "edgevana": {
+    "domain": "nodes.edgevana.com",
+    "source": "https://media.brand.dev/4f008606-7340-476d-9273-19895fee5f8f.svg"
+  },
+  "ekasunucu": {
+    "domain": "ekasunucu.com",
+    "source": "https://media.brand.dev/f748b537-9c4f-4ff2-84dc-5a68fd845aaf.webp"
+  },
+  "elastx": {
+    "domain": "elastx.se",
+    "source": "https://media.brand.dev/647e419a-3a6c-4469-9b90-c4e09a8597f5.png"
+  },
+  "empiriolabs": {
+    "domain": "empiriolabs.ai",
+    "source": "https://media.brand.dev/a9889f20-80c5-4f27-b683-98b7c79b13d0.png"
+  },
+  "enverge": {
+    "domain": "enverge.ai",
+    "source": "https://media.brand.dev/5b8099b9-87bc-43f7-98e9-d95f41dcae3a.png"
+  },
+  "exabits": {
+    "domain": "exabits.ai",
+    "source": "https://media.brand.dev/88d515bf-f433-4387-a5de-3ca24c9b766d.png"
+  },
+  "exoscale": {
+    "domain": "exoscale.com",
+    "source": "https://media.brand.dev/43035122-6af6-40fa-9cba-2247e0ec3976.png"
+  },
+  "fal": {
+    "domain": "fal.ai",
+    "source": "https://media.brand.dev/d5aa98cc-b206-414b-bedc-083ba49080c6.png"
+  },
+  "featurize": {
+    "domain": "featurize.cn",
+    "source": "https://media.brand.dev/34cabd7b-f9c8-42da-8d91-a08dba06973e.svg"
+  },
+  "fireworks": {
+    "domain": "fireworks.ai",
+    "source": "https://media.brand.dev/7f507a1d-08e9-4f09-9890-3d13fe24601b.svg"
+  },
+  "firmus": {
+    "domain": "firmus.co",
+    "source": "https://media.brand.dev/7335e09d-916a-4975-96a2-e6a326e95e48.svg"
+  },
+  "fluidstack": {
+    "domain": "fluidstack.io",
+    "source": "https://media.brand.dev/140b3122-daf9-4a93-a840-6c35ec0c3f4d.png"
+  },
+  "fluxedge": {
+    "domain": "fluxedge.ai",
+    "source": "https://media.brand.dev/68dd1037-7a00-4f95-99ac-129b0afc2dc9.png"
+  },
+  "gcore": {
+    "domain": "gcore.com",
+    "source": "https://media.brand.dev/9b517d25-5674-4d14-b509-30c52ceada95.png"
+  },
+  "genesis": {
+    "domain": "developers.genesiscloud.com",
+    "source": "https://media.brand.dev/b6100ba6-45bc-4c21-b7e4-9a61e9939da9.png"
+  },
+  "geodd": {
+    "domain": "geodd.io",
+    "source": "https://media.brand.dev/aae3fcab-2326-4c39-9e89-4a2ae3318cfe.png"
+  },
+  "gmi": {
+    "domain": "gmicloud.ai",
+    "source": "https://media.brand.dev/59836b8f-9dbf-479d-afcb-3b47dde104c5.png"
+  },
+  "gmogpucloud": {
+    "domain": "gpucloud.gmo",
+    "source": "https://media.brand.dev/5f2947a2-2dc3-4436-8a6e-ba79a277bde0.png"
+  },
+  "golem": {
+    "domain": "golem.network",
+    "source": "https://media.brand.dev/f9cc79ea-f0c5-4fab-8a92-3aaadb71b151.png"
+  },
+  "gongjicompute": {
+    "domain": "suanli.cn",
+    "source": "https://media.brand.dev/a12bd099-9cde-483d-8d92-9beac1a970a5.svg"
+  },
+  "gonka": {
+    "domain": "gonka.ai",
+    "source": "https://media.brand.dev/5d77bc9b-51de-4a73-9cdc-c29856b97490.svg"
+  },
+  "google": {
+    "domain": "cloud.google.com",
+    "source": "https://media.brand.dev/f9f7b915-23f7-4d9d-8230-d056136eda84.png"
+  },
+  "gpuaascom": {
+    "domain": "gpuaas.com",
+    "source": "https://media.brand.dev/bc942dcc-8ce8-498b-a038-09d6fa0cd82c.png"
+  },
+  "gpuai": {
+    "domain": "gpu.ai",
+    "source": "https://media.brand.dev/c21e21d3-e446-46e0-a5fa-bbb099fe1b35.svg"
+  },
+  "gpubroker": {
+    "domain": "gpu.broker",
+    "source": "https://www.gpu.broker/",
+    "selector": ".brand-mark",
+    "method": "Rendered official brand mark captured with Context"
+  },
+  "gpuhub": {
+    "domain": "gpuhub.com",
+    "source": "https://media.brand.dev/bc4b660c-eb47-44e6-8eff-0f1d41be8917.png"
+  },
+  "gpuli": {
+    "domain": "gpuli.com",
+    "source": "https://media.brand.dev/7d0f53f2-3371-4178-9e4f-de48ae1ac842.svg"
+  },
+  "gpuoutlet": {
+    "domain": "gpuoutlet.ai",
+    "source": "https://media.brand.dev/2b501308-b91b-4e22-8c5f-1562af5d4f51.svg"
+  },
+  "gpurenthub": {
+    "domain": "gpurenthub.com",
+    "source": "https://media.brand.dev/b1216104-28e5-4ed1-9af2-ec3dce78b012.svg"
+  },
+  "gpushare": {
+    "domain": "gpushare.com",
+    "source": "https://media.brand.dev/4d6312a1-b21a-4aa3-8e1b-31c2686902eb.webp"
+  },
+  "greenaicloud": {
+    "domain": "greenai.cloud",
+    "source": "https://media.brand.dev/3d5ceed4-f1f0-434b-978e-b367a9b9d89b.svg"
+  },
+  "greennode": {
+    "domain": "greennode.ai",
+    "source": "https://media.brand.dev/381aee79-c37d-4e45-9c9a-95b88450ace9.png"
+  },
+  "groq": {
+    "domain": "console.groq.com",
+    "source": "https://media.brand.dev/8e98c76f-6d33-4558-81fb-ad02e3efb65c.png"
+  },
+  "heabsy": {
+    "domain": "heabsy.com",
+    "source": "https://media.brand.dev/9506bcd1-50f1-4685-85dd-7005a47a973e.png"
+  },
+  "hetzner": {
+    "domain": "hetzner.com",
+    "source": "https://media.brand.dev/e553a4ad-e99b-4e5d-8d77-4f4cbfac8631.png"
+  },
+  "hexgrid": {
+    "domain": "hexgrid.cloud",
+    "source": "https://media.brand.dev/3c97236b-6a87-4491-b728-07fe1bf1fdec.png"
+  },
+  "hiapi": {
+    "domain": "hiapi.ai",
+    "source": "https://media.brand.dev/e07adf12-952c-42e6-a6ac-e8c69d27f655.svg"
+  },
+  "highreso": {
+    "domain": "soroban.highreso.jp",
+    "source": "https://media.brand.dev/b4cbc17f-92b5-4a31-8df2-4c7b2ee35832.png"
+  },
+  "highriseai": {
+    "domain": "highrise.ai",
+    "source": "https://media.brand.dev/ffbf2002-d2fe-424f-b3ca-6896d5943071.png"
+  },
+  "hikube": {
+    "domain": "hikube.cloud",
+    "source": "https://media.brand.dev/10bf5f46-55c1-4ab4-b33f-aaf2ffd843aa.svg"
+  },
+  "hinode": {
+    "domain": "hinode.run",
+    "source": "https://media.brand.dev/049f430e-26d8-458e-969a-72ae4c1859fe.svg"
+  },
+  "hosted": {
+    "domain": "hosted.ai",
+    "source": "https://media.brand.dev/ae517f47-4478-4651-8e8b-0c998e23d5ad.png"
+  },
+  "hostiko": {
+    "domain": "hostiko.network",
+    "source": "https://media.brand.dev/4fe23c2e-9a51-4819-9131-2aa3a604da61.png"
+  },
+  "hostinger": {
+    "domain": "hostinger.com",
+    "source": "https://media.brand.dev/5ca18ee6-37b9-4fdf-a7f1-9259e20e27b7.png"
+  },
+  "hostkey": {
+    "domain": "hostkey.com",
+    "source": "https://media.brand.dev/260e3bdd-e28f-444a-b410-ec33b51061f2.svg"
+  },
+  "hotaisle": {
+    "domain": "hotaisle.xyz",
+    "source": "https://media.brand.dev/e7f1fa4f-ad78-4460-9f86-b961a9de8177.svg"
+  },
+  "huaweicloud": {
+    "domain": "huaweicloud.com",
+    "source": "https://media.brand.dev/56628c2b-8dff-4c92-ae1f-38a6f045e111.png"
+  },
+  "huggingface": {
+    "domain": "huggingface.co",
+    "source": "https://media.brand.dev/43ee5ad5-c0bf-4e09-9de9-73a1c1d0f534.jpg"
+  },
+  "hyperai": {
+    "domain": "hyper.ai",
+    "source": "https://media.brand.dev/6e3101c0-1c31-459b-8e72-69490a8728f7.svg"
+  },
+  "hyperbolic": {
+    "domain": "hyperbolic.ai",
+    "source": "https://media.brand.dev/812c4ba1-fbe1-449e-bf1e-13dad4974b7a.png"
+  },
+  "hyperstack": {
+    "domain": "hyperstack.cloud",
+    "source": "https://media.brand.dev/1c5acdd8-3dd5-4512-ba1c-cca7ffa6a097.webp"
+  },
+  "ibm": {
+    "domain": "ibm.com",
+    "source": "https://media.brand.dev/6aec5984-0e17-4196-be78-da61c6289d2d.png"
+  },
+  "impossiblecloud": {
+    "domain": "impossiblecloud.com",
+    "source": "https://media.brand.dev/b20d5186-fcf0-4707-9df2-3b243a5ce548.png"
+  },
+  "inferless": {
+    "domain": "inferless.com",
+    "source": "https://media.brand.dev/ee6d9e86-34a9-4a63-97bb-fe143d16ece0.png"
+  },
+  "infomaniak": {
+    "domain": "infomaniak.com",
+    "source": "https://media.brand.dev/bd172214-9161-4165-8c79-b30858b4fb3e.png"
+  },
+  "io": {
+    "domain": "io.net",
+    "source": "https://media.brand.dev/ecf0dbd4-c07b-4c64-8612-a1f92fba8d5f.svg"
+  },
+  "ionos": {
+    "domain": "cloud.ionos.com",
+    "source": "https://media.brand.dev/9ed51d85-48db-455b-88e0-c04e0dd293ad.svg"
+  },
+  "iren": {
+    "domain": "iren.com",
+    "source": "https://media.brand.dev/d2f7a3e6-2e2c-49ec-ad97-0c4f6743fe32.svg"
+  },
+  "jarvis": {
+    "domain": "jarvislabs.ai",
+    "source": "https://media.brand.dev/b599d655-c1de-41e2-8940-8299da109641.png"
+  },
+  "kakaocloud": {
+    "domain": "kakaocloud.com",
+    "source": "https://media.brand.dev/511f8c3a-ca90-4f14-8124-dde73605e78e.svg"
+  },
+  "kingsoftcloud": {
+    "domain": "ksyun.com",
+    "source": "https://media.brand.dev/624bb371-0625-4899-a466-83878ff53507.png"
+  },
+  "koyeb": {
+    "domain": "koyeb.com",
+    "source": "https://media.brand.dev/6112e2df-38a6-4052-9317-433906e57774.png"
+  },
+  "lambda": {
+    "domain": "lambda.ai",
+    "source": "https://media.brand.dev/bc856c63-4640-46e3-a119-b4d490455fc5.svg"
+  },
+  "latitude": {
+    "domain": "latitude.sh",
+    "source": "https://media.brand.dev/5b2469b3-8743-4e4f-abde-72d8eb574553.svg"
+  },
+  "leadergpu": {
+    "domain": "leadergpu.com",
+    "source": "https://media.brand.dev/cbb31782-66f5-4689-936c-6759648bc605.jpg"
+  },
+  "leafcloud": {
+    "domain": "leaf.cloud",
+    "source": "https://media.brand.dev/55caaf67-3419-46e9-ab30-1da33cc8ab1d.svg"
+  },
+  "leaseweb": {
+    "domain": "leaseweb.com",
+    "source": "https://media.brand.dev/abc7519a-8046-4265-8a56-7960382ae068.png"
+  },
+  "lightningai": {
+    "domain": "lightning.ai",
+    "source": "https://media.brand.dev/4336d334-b871-4bbe-acaa-6ee604b66b04.svg"
+  },
+  "lium": {
+    "domain": "lium.io",
+    "source": "https://media.brand.dev/f58ee813-f957-4f62-9099-f6e52e8f5b8a.svg"
+  },
+  "lyceum": {
+    "domain": "lyceum.technology",
+    "source": "https://media.brand.dev/25b0926d-aa22-4dd4-bbe9-532d9fe0d04d.svg"
+  },
+  "massive": {
+    "domain": "massedcompute.com",
+    "source": "https://media.brand.dev/672bd3e5-3942-4ab5-8db5-dce728f90792.png"
+  },
+  "matpool": {
+    "domain": "matpool.com",
+    "source": "https://media.brand.dev/f71e18f8-6982-4e1e-88d4-0ec64ee79b85.png"
+  },
+  "mistral": {
+    "domain": "mistral.ai",
+    "source": "https://media.brand.dev/ce76ad47-e988-414c-80c2-520dcb5f0b2c.jpg"
+  },
+  "modal": {
+    "domain": "modal.com",
+    "source": "https://media.brand.dev/ceed4bb4-1d1e-42ee-9cc9-161a0520a6a1.svg"
+  },
+  "nebius": {
+    "domain": "nebius.com",
+    "source": "https://media.brand.dev/f9dd4762-ef5b-4b16-a143-40fbde193710.svg"
+  },
+  "neevcloud": {
+    "domain": "neevcloud.com",
+    "source": "https://media.brand.dev/a65d8e92-b16d-4777-959f-a2e19101b801.png"
+  },
+  "neoxis": {
+    "domain": "neoxis.ai",
+    "source": "https://media.brand.dev/9f891d6e-9046-4b0b-bc05-bff2fb9b2f7c.png"
+  },
+  "netmindpower": {
+    "domain": "netmind.ai",
+    "source": "https://media.brand.dev/60c5b145-966c-4613-b504-6cd8d06f95ef.svg"
+  },
+  "nhncloud": {
+    "domain": "nhncloud.com",
+    "source": "https://media.brand.dev/946d5b68-27eb-4836-834c-d89cabf6e08b.png"
+  },
+  "nodeai": {
+    "domain": "nodes.ai",
+    "source": "https://media.brand.dev/7c0cdb2a-e150-4bcf-ad9c-caaf7217b61f.svg"
+  },
+  "northflank": {
+    "domain": "northflank.com",
+    "source": "https://media.brand.dev/b2c91c65-1ec2-4baf-9876-156af2823bb9.svg"
+  },
+  "nosana": {
+    "domain": "nosana.com",
+    "source": "https://media.brand.dev/69f65dfd-118d-4be6-ad4f-8e078dcb852b.png"
+  },
+  "novacloud": {
+    "domain": "nova-cloud.ai",
+    "source": "https://media.brand.dev/b76a5731-8309-4fe3-8848-8cab6fbd3d3b.png"
+  },
+  "novita": {
+    "domain": "novita.ai",
+    "source": "https://media.brand.dev/9c3f55fa-6a20-419a-aaef-ff899dfc1d51.png"
+  },
+  "nscale": {
+    "domain": "nscale.com",
+    "source": "https://media.brand.dev/cb43ec1e-5437-4ba5-95c3-ad971baa59bd.png"
+  },
+  "nvidiadgxcloud": {
+    "domain": "nvidia.com",
+    "source": "https://media.brand.dev/5b87582b-6229-446d-af3a-7da9fa58cb10.svg"
+  },
+  "oblivus": {
+    "domain": "oblivus.com",
+    "source": "https://media.brand.dev/225d7099-d781-4210-ab5c-2ab941630fe2.png"
+  },
+  "octaspace": {
+    "domain": "octa.space",
+    "source": "https://media.brand.dev/99c54e8b-081d-4f15-a320-3b486ea73c16.svg"
+  },
+  "omegagradient": {
+    "domain": "omegagradient.com",
+    "source": "https://media.brand.dev/8ffcb1a5-64f5-47c6-baba-e052d4b3ea1c.png"
+  },
+  "openai": {
+    "domain": "developers.openai.com",
+    "source": "https://media.brand.dev/ccae98c7-0023-42c9-8b9a-96df72071381.svg"
+  },
+  "openbayes": {
+    "domain": "openbayes.com",
+    "source": "https://media.brand.dev/a9685a4d-99f3-4624-9486-08352fc9b74c.svg"
+  },
+  "openrelay": {
+    "domain": "openrelay.inc",
+    "source": "https://media.brand.dev/83bb9d51-3ffe-453b-bf26-b8f41b288abe.svg"
+  },
+  "openrouter": {
+    "domain": "openrouter.ai",
+    "source": "https://media.brand.dev/492c2b25-d263-473f-8eb2-de4d47282fda.png"
+  },
+  "oracle": {
+    "domain": "oracle.com",
+    "source": "https://media.brand.dev/db3bf6ee-c900-464e-9ed6-c97901fa887e.jpg"
+  },
+  "ori": {
+    "domain": "ori.co",
+    "source": "https://media.brand.dev/f04d90c1-0716-4611-92f9-67da293c866c.png"
+  },
+  "orionvm": {
+    "domain": "orionvm.com",
+    "source": "https://media.brand.dev/93552295-1439-4c84-89a3-595d90f9a393.png"
+  },
+  "ovh": {
+    "domain": "ovhcloud.com",
+    "source": "https://media.brand.dev/4aba47fa-d588-41cc-9f94-a3da3745551b.svg"
+  },
+  "packet": {
+    "domain": "packet.ai",
+    "source": "https://media.brand.dev/035db4a5-4173-468b-a7a7-b69c8ba1a425.png"
+  },
+  "paperspace": {
+    "domain": "paperspace.com",
+    "source": "https://media.brand.dev/46dcc008-efb5-47b4-90d0-5ec9f29b472e.webp"
+  },
+  "perplexity": {
+    "domain": "docs.perplexity.ai",
+    "source": "https://media.brand.dev/841d7f68-d174-4284-a875-2b4ce1e8abfe.png"
+  },
+  "petabyte": {
+    "domain": "petabyte.market",
+    "source": "https://media.brand.dev/7167edb0-f4e8-4cd1-a818-496a093ad7fa.webp"
+  },
+  "phoenixnap": {
+    "domain": "phoenixnap.com",
+    "source": "https://media.brand.dev/a3d8a26a-4f94-4994-8a09-0032f50a3292.png"
+  },
+  "powergpu": {
+    "domain": "powergpu.ai",
+    "source": "https://media.brand.dev/7668a8b2-71f7-4a4b-b837-d6b5978c10d7.jpg"
+  },
+  "prime": {
+    "domain": "app.primeintellect.ai",
+    "source": "https://media.brand.dev/f61a55ed-74b3-46f0-bc6a-8617af3db04c.svg"
+  },
+  "quakeai": {
+    "domain": "quake.ai",
+    "source": "https://media.brand.dev/8981898b-3548-454f-8b87-3bd2b27a604e.svg"
+  },
+  "quantacloud": {
+    "domain": "quantacloud.net",
+    "source": "https://media.brand.dev/dd2f21d8-4cad-4564-9f33-d9007ab3236e.png"
+  },
+  "quickpod": {
+    "domain": "quickpod.io",
+    "source": "https://media.brand.dev/d6cf8125-715e-47c4-a060-ce016b3bcbad.svg"
+  },
+  "rendernetwork": {
+    "domain": "rendernetwork.com",
+    "source": "https://media.brand.dev/3c870e06-bf30-4ee4-82ab-857c5ca32408.png"
+  },
+  "replicate": {
+    "domain": "replicate.com",
+    "source": "https://media.brand.dev/9600066f-6db6-4361-a357-41ecb143f79e.svg"
+  },
+  "resetdata": {
+    "domain": "resetdata.com.au",
+    "source": "https://media.brand.dev/a8b43e66-f0ec-4e5f-b622-5a30f0fd19dc.png"
+  },
+  "runcrate": {
+    "domain": "runcrate.ai",
+    "source": "https://media.brand.dev/2e63e711-7887-4de9-86e9-dc3718d58ec4.png"
+  },
+  "runpod": {
+    "domain": "runpod.io",
+    "source": "https://media.brand.dev/038e7844-362a-41ed-bdf8-cbb81f74dfbf.png"
+  },
+  "sakurainternet": {
+    "domain": "cloud.sakura.ad.jp",
+    "source": "https://media.brand.dev/85642c7d-6b1b-435a-81ec-d52f3816b439.png"
+  },
+  "salad": {
+    "domain": "salad.com",
+    "source": "https://media.brand.dev/018a888f-0a5e-4986-aefc-5f8dffa5f258.svg"
+  },
+  "sambanova": {
+    "domain": "cloud.sambanova.ai",
+    "source": "https://media.brand.dev/532ddfe4-9ff7-4ee1-a4fb-6c51dff919bb.png"
+  },
+  "saturncloud": {
+    "domain": "saturncloud.io",
+    "source": "https://media.brand.dev/af35d00b-463b-456e-8446-101c20185d64.png"
+  },
+  "scaleway": {
+    "domain": "scaleway.com",
+    "source": "https://media.brand.dev/90207de9-b003-40fb-9218-5edd3f69377e.png"
+  },
+  "seeweb": {
+    "domain": "seeweb.it",
+    "source": "https://media.brand.dev/11b05904-aa6d-4445-8114-fad55178de60.png"
+  },
+  "selectel": {
+    "domain": "selectel.ru",
+    "source": "https://media.brand.dev/07178ec3-4da1-41e8-a750-20ac6444464f.png"
+  },
+  "sesterce": {
+    "domain": "cloud.sesterce.com",
+    "source": "https://media.brand.dev/7dd5172c-9d94-4077-9e53-3f09ee4bc93b.png"
+  },
+  "sfcompute": {
+    "domain": "sfcompute.com",
+    "source": "https://media.brand.dev/2050a621-707f-4c84-b502-7f851f65ae13.svg"
+  },
+  "shadeform": {
+    "domain": "shadeform.ai",
+    "source": "https://media.brand.dev/a1033a00-d75f-4376-8d08-64e308a139d7.svg"
+  },
+  "shape": {
+    "domain": "shapelabs.dev",
+    "source": "https://media.brand.dev/86153433-9c2f-4c08-a538-df36f16398c5.svg"
+  },
+  "sharonai": {
+    "domain": "sharonai.com",
+    "source": "https://media.brand.dev/7074efb8-2ae5-465f-a852-ce1c6445765b.png"
+  },
+  "skt": {
+    "domain": "news.sktelecom.com",
+    "source": "https://media.brand.dev/10a1b07c-e6a9-40ee-a950-8c2954d57283.png"
+  },
+  "spheron": {
+    "domain": "spheron.network",
+    "source": "https://media.brand.dev/270aecc2-7710-44a2-814e-ac28ec482480.png"
+  },
+  "standardcompute": {
+    "domain": "standard.ws",
+    "source": "https://media.brand.dev/cd4e8187-539c-4e91-9d80-2c17c286900d.png"
+  },
+  "swissgpu": {
+    "domain": "swissgpu.ch",
+    "source": "https://media.brand.dev/fe68dc04-8121-4df6-a28b-1279c8c2a692.png"
+  },
+  "tatacommunications": {
+    "domain": "tatacommunications.com",
+    "source": "https://media.brand.dev/770152f4-f783-4db3-92ee-b996a6a373e8.png"
+  },
+  "tencentcloud": {
+    "domain": "tencentcloud.com",
+    "source": "https://media.brand.dev/06c06b1d-958f-4178-b2cb-d0dedc15c460.png"
+  },
+  "tensordock": {
+    "domain": "tensordock.com",
+    "source": "https://media.brand.dev/062c9bdc-e129-43df-bed7-df192c90dddc.png"
+  },
+  "tensorwave": {
+    "domain": "tensorwave.com",
+    "source": "https://media.brand.dev/bc671072-9a8d-46af-a262-74c7a568e84b.svg"
+  },
+  "theta": {
+    "domain": "thetaedgecloud.com",
+    "source": "https://media.brand.dev/ae382f26-3a6f-4751-a7ce-0b6d4dc3fc47.png"
+  },
+  "thunder": {
+    "domain": "thundercompute.com",
+    "source": "https://media.brand.dev/72d86893-923a-44e5-8a13-9805f4c5ca4d.png"
+  },
+  "timewebcloud": {
+    "domain": "timeweb.cloud",
+    "source": "https://media.brand.dev/bada0776-2dcb-4077-bc2a-d916897a371c.svg"
+  },
+  "together": {
+    "domain": "together.ai",
+    "source": "https://media.brand.dev/efcefe25-6a35-4b23-bb3f-68eca9898546.png"
+  },
+  "ucloud": {
+    "domain": "ucloud.cn",
+    "source": "https://media.brand.dev/6bc80da2-4087-4585-a279-f2ff4e95853b.png"
+  },
+  "upcloud": {
+    "domain": "upcloud.com",
+    "source": "https://media.brand.dev/589bef2f-e10c-4205-a8de-950103a50624.png"
+  },
+  "valdi": {
+    "domain": "gpulist.valdi.ai",
+    "source": "https://media.brand.dev/fdb1f45b-33ad-4688-8d4e-ea95b749cd1f.png"
+  },
+  "vast": {
+    "domain": "vast.ai",
+    "source": "https://media.brand.dev/66cf6760-947a-4851-adf9-a9195b39c57c.svg"
+  },
+  "verda": {
+    "domain": "verda.com",
+    "source": "https://media.brand.dev/05a99257-45ab-4f7f-ad9e-6a24ff0b757f.svg"
+  },
+  "vexxhost": {
+    "domain": "vexxhost.com",
+    "source": "https://media.brand.dev/c7f3e83d-47b0-45c5-a7cc-da0c994f0188.png"
+  },
+  "voltagegpu": {
+    "domain": "voltagegpu.com",
+    "source": "https://media.brand.dev/0ff93abc-cfbf-412a-9f34-7f2b8b1ecfe1.png"
+  },
+  "voltagepark": {
+    "domain": "voltagepark.com",
+    "source": "https://media.brand.dev/3e8ad4d8-6b71-46da-895a-da4bc1a7f3ca.png"
+  },
+  "vshosting": {
+    "domain": "vshosting.cz",
+    "source": "https://media.brand.dev/1a7e3b31-e347-4ea4-8ae9-dfef8599e1b3.png"
+  },
+  "vultr": {
+    "domain": "vultr.com",
+    "source": "https://media.brand.dev/2eb01939-8de6-479d-9dd5-dcef733c0307.svg"
+  },
+  "wafer": {
+    "domain": "wafer.ai",
+    "source": "https://media.brand.dev/4c672fcf-b257-477b-8dce-1afbb711520b.png"
+  },
+  "whitefiber": {
+    "domain": "whitefiber.com",
+    "source": "https://media.brand.dev/3d69df70-193c-45e1-944e-3495dccfc6e4.png"
+  },
+  "xai": {
+    "domain": "docs.x.ai",
+    "source": "https://media.brand.dev/9f1f2aa5-68d3-4b24-975f-0d3e3b04c3db.svg"
+  },
+  "xiangongcloud": {
+    "domain": "xiangongyun.com",
+    "source": "https://media.brand.dev/c6cb2994-efe8-48d6-a772-46781f23e84a.svg"
+  },
+  "yottashakticloud": {
+    "domain": "shakticloud.ai",
+    "source": "https://media.brand.dev/c32c2da1-c980-4e22-a3bb-2bea77313722.png"
+  },
+  "zcloud": {
+    "domain": "zettabytecloud.com",
+    "source": "https://media.brand.dev/741cb8a0-fb06-41ec-bf6d-57827d951655.svg"
+  },
+  "zenlayer": {
+    "domain": "zenlayer.com",
+    "source": "https://media.brand.dev/dc1c87ab-25aa-4b4f-b5ec-33f20d423e05.svg"
+  }
+}

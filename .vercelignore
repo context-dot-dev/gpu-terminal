@@ -1,0 +1,7 @@
+.git
+.env*
+captures
+playwright-report
+test-results
+tests
+/tmp
