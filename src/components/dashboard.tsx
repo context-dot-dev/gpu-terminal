@@ -654,7 +654,7 @@ function MarketDashboard({
     );
     const link = document.createElement("a");
     link.href = url;
-    link.download = `gpu-atlas-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `gpu-terminal-${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }

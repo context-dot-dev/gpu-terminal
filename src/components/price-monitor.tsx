@@ -829,7 +829,7 @@ export function PriceMonitor({
                   <span>
                     {hasHistory
                       ? `${observationCount} stored observations · ${currency}/GPU/hour${chartMode === "offer" && focused ? ` · ${focused.direction}` : ""}`
-                      : `Current quote · ${currency}/GPU/hour · observed ${focused ? new Date(focused.offer.observedAt).toLocaleString() : "—"}`}
+                      : `Current quote · ${currency}/GPU/hour · observed ${focused ? `${new Date(focused.offer.observedAt).toLocaleString("en-US", { timeZone: "UTC" })} UTC` : "—"}`}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock3 className="size-3.5" />
@@ -838,7 +838,7 @@ export function PriceMonitor({
                         ? "Fetching recorded history"
                         : "History unavailable"
                       : rows.length
-                        ? `Observed ${new Date(rows[0].at).toLocaleDateString()} – ${new Date(rows.at(-1)!.at).toLocaleDateString()}`
+                        ? `Observed ${new Date(rows[0].at).toLocaleDateString("en-US", { timeZone: "UTC" })} – ${new Date(rows.at(-1)!.at).toLocaleDateString("en-US", { timeZone: "UTC" })} UTC`
                         : "Waiting for observations"}
                   </span>
                 </div>
