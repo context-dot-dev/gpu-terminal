@@ -1,6 +1,6 @@
 # GPU Terminal
 
-Source-backed GPU hourly price monitoring, with the GPU Atlas interface. Next.js 16.4, React 19, TypeScript, shadcn/ui (Base UI), EvilCharts, Neon Postgres and Vercel.
+Source-backed GPU hourly price monitoring, with the gpu-terminal interface. Next.js 16.4, React 19, TypeScript, shadcn/ui (Base UI), EvilCharts, Neon Postgres and Vercel.
 
 ## Run
 

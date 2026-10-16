@@ -170,7 +170,7 @@ test("comparison preserves configuration and billing details", async ({
 test("saved shortlist persists in browser and empty state works", async ({
   page,
 }) => {
-  await page.goto("/?family=H100");
+  await page.goto("/?family=H100&provider=nebius");
   await page
     .getByTestId("price-row")
     .first()
@@ -189,6 +189,7 @@ test("CSV exports filtered values and provenance", async ({ page }) => {
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export CSV" }).click();
   const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/^gpu-terminal-\d{4}-\d{2}-\d{2}\.csv$/);
   const path = await download.path();
   const csv = await readFile(path!, "utf8");
   expect(csv).toContain("observedAt,sourceUrl,notes,evidence");

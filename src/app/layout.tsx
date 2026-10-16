@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GPU Atlas — GPU Cloud Price Monitor",
+  title: "gpu-terminal — GPU Cloud Price Monitor",
   description:
     "Compare source-backed GPU hourly prices across clouds and decentralized marketplaces. Filter by hardware, memory, region, billing model and minimum spend.",
 };

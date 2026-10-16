@@ -27,6 +27,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useQueryStates } from "nuqs";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -252,6 +253,33 @@ const options = (all: string, values: string[]) => [
   { value: "all", label: all },
   ...values.map((value) => ({ value, label: value })),
 ];
+function AttributionLinks({ className }: { className: string }) {
+  return (
+    <nav className={`attribution-links ${className}`} aria-label="Project links">
+      <a
+        className="context-attribution"
+        href="https://context.dev/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Powered by Context.dev"
+      >
+        <Image src="/context-dev-symbol-white.svg" alt="" width={18} height={18} unoptimized />
+        <span>Context.dev</span>
+      </a>
+      <a
+        className="source-attribution"
+        href="https://github.com/context-dot-dev/gpu-terminal"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg aria-hidden="true" viewBox="0 0 32 32" fill="currentColor">
+          <path fillRule="evenodd" d="M16 0C7.16 0 0 7.16 0 16c0 7.08 4.58 13.06 10.94 15.18.8.14 1.1-.34 1.1-.76 0-.38-.02-1.64-.02-2.98-4.02.74-5.06-.98-5.38-1.88-.18-.46-.96-1.88-1.64-2.26-.56-.3-1.36-1.04-.02-1.06 1.26-.02 2.16 1.16 2.46 1.64 1.44 2.42 3.74 1.74 4.66 1.32.14-1.04.56-1.74 1.02-2.14-3.56-.4-7.28-1.78-7.28-7.9 0-1.74.62-3.18 1.64-4.3-.16-.4-.72-2.04.16-4.24 0 0 1.34-.42 4.4 1.64 1.28-.36 2.64-.54 4-.54s2.72.18 4 .54c3.06-2.08 4.4-1.64 4.4-1.64.88 2.2.32 3.84.16 4.24 1.02 1.12 1.64 2.54 1.64 4.3 0 6.14-3.74 7.5-7.3 7.9.58.5 1.08 1.46 1.08 2.96 0 2.14-.02 3.86-.02 4.4 0 .42.3.92 1.1.76C27.42 29.06 32 23.06 32 16 32 7.16 24.84 0 16 0Z" />
+        </svg>
+        <span>Open source</span>
+      </a>
+    </nav>
+  );
+}
 export function Dashboard({
   initial,
   initialQuery = "",
@@ -654,7 +682,7 @@ function MarketDashboard({
     );
     const link = document.createElement("a");
     link.href = url;
-    link.download = `gpu-atlas-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `gpu-terminal-${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
@@ -968,7 +996,7 @@ function MarketDashboard({
       <header className="terminal-masthead">
         <Link
           href="/"
-          aria-label="GPU ATLAS COMPUTE MARKETS"
+          aria-label="gpu-terminal COMPUTE MARKETS"
           prefetch={false}
           onClick={(event) => {
             if (
@@ -989,7 +1017,7 @@ function MarketDashboard({
           className={cn(buttonVariants({ variant: "ghost" }), "masthead-brand")}
         >
           <Cpu data-icon="inline-start" strokeWidth={1.2} />
-          <span>GPU Atlas</span>
+          <span>gpu-terminal</span>
         </Link>
         <MarketSearch
           rates={rates}
@@ -1081,6 +1109,7 @@ function MarketDashboard({
             </span>
           </Button>
         </div>
+        <AttributionLinks className="mobile-attribution" />
       </header>
       <main className="terminal-main flex flex-col gap-2 px-2 pb-2 pt-2">
         <h1 className="sr-only">GPU market monitor</h1>
@@ -1857,8 +1886,8 @@ function MarketDashboard({
             </div>
           </TabsContent>
         </div>
-        <footer className="flex flex-wrap justify-between gap-3 pt-2 text-xs text-muted-foreground">
-          <span>GPU Atlas · First-party pricing, independently collected</span>
+        <footer className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-muted-foreground">
+          <AttributionLinks className="desktop-attribution" />
           <span>
             Source checks run on schedule · Auto-sync 30s · Snapshot{" "}
             {mounted
@@ -2145,7 +2174,7 @@ function MarketDashboard({
       <Sheet open={method} onOpenChange={setMethod}>
         <SheetContent className="overflow-y-auto data-[side=right]:w-full data-[side=right]:sm:max-w-xl">
           <SheetHeader>
-            <SheetTitle>How GPU Atlas compares prices</SheetTitle>
+            <SheetTitle>How gpu-terminal compares prices</SheetTitle>
             <SheetDescription>
               Transparent inputs. Explicit limits.
             </SheetDescription>

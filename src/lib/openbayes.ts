@@ -40,6 +40,8 @@ export function parseOpenBayes(
   const sections = [
     ...source.matchAll(/^#### ([^\n]+)\n([\s\S]*?)(?=^#### |$(?![\s\S]))/gm),
   ];
+  if (!sections.length)
+    throw new Error("Source OpenBayes detailed GPU pricing cards are missing; retained the last successful observation");
   if (sections.length !== Object.keys(families).length)
     throw new Error("Source OpenBayes GPU families changed");
   for (const section of sections) {

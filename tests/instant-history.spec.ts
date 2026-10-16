@@ -41,8 +41,15 @@ for (const path of ["/", "/?family=H200&provider=nebius&fresh=false"]) {
     }
     await chart.getByRole("button", { name: "Last 24 hours" }).click();
     await expect(chart).toContainText(/\d+ stored observations/);
-    if ((await chart.locator("[data-price-line]").count()) === 0)
-      await expect(chart).toContainText("No observations");
+    if ((await chart.locator("[data-price-line]").count()) === 0) {
+      const hasSingleObservation =
+        (await chart.locator("[data-price-point]").count()) > 0;
+      await expect(chart).toContainText(
+        hasSingleObservation
+          ? "More observations are needed to measure a trend"
+          : "No observations",
+      );
+    }
     await expect(chart.getByTestId("price-history-chart")).toBeVisible();
     await expect(
       chart.getByText("Loading price history…", { exact: true }),

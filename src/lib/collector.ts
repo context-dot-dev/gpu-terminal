@@ -34,6 +34,10 @@ import { parseGpuRentHub } from "./gpurenthub";
 import { cloudRuNoRatesReason, parseCloudRu } from "./cloudru";
 import { parseSelectel } from "./selectel";
 import { parseValdi } from "./valdi";
+import { parseSalad } from "./salad";
+import { parseTogether } from "./together";
+import { parseGreenAi } from "./greenai";
+import { parseLeafcloud } from "./leafcloud";
 import { publishableRates } from "./quality";
 import { providers, type Provider } from "./catalog";
 import { database } from "./db";
@@ -105,6 +109,9 @@ const tableParsers: Partial<
   cloudru: parseCloudRu,
   selectel: parseSelectel,
   valdi: parseValdi,
+  salad: parseSalad,
+  together: parseTogether,
+  greenaicloud: parseGreenAi,
 };
 const parserVersion = "2026-10-07-v3";
 const normalizeText = (s: string) =>
@@ -180,13 +187,15 @@ async function readSource(provider: Provider, structured: boolean) {
       formats: {
         markdown: true,
         ...(structured ? { json: true } : {}),
-        ...(provider.id === "baseten" ? { parse: true } : {}),
+        ...(["baseten", "leafcloud"].includes(provider.id) ? { parse: true } : {}),
       },
-      ...(provider.id === "baseten"
+      ...(["baseten", "leafcloud"].includes(provider.id)
         ? {
             parseParams: {
               rules: {
-                buttons: { selector: "button", type: "list", output: "html" },
+                ...(provider.id === "baseten"
+                  ? { buttons: { selector: "button", type: "list", output: "html" } }
+                  : { gpuPricing: { selector: 'section:has(a[href="/products/gpu/"]) astro-island[component-export="PricingDataTable"]', type: "list", output: "html" } }),
               },
             },
           }
@@ -225,6 +234,8 @@ async function readSource(provider: Provider, structured: boolean) {
       payload.parsed?.success === true
         ? (payload.parsed.data?.buttons as unknown)
         : undefined,
+    gpuPricing:
+      payload.parsed?.success === true ? payload.parsed.data?.gpuPricing : undefined,
     observedAt: new Date(Date.now() - cacheAge).toISOString(),
   };
 }
@@ -318,6 +329,15 @@ export async function collectProvider(provider: Provider) {
       );
     }
     const source = await readSource(provider, false);
+    if (provider.id === "leafcloud") {
+      const rates = parseLeafcloud(source.gpuPricing, source.observedAt, provider.url);
+      return await saveObservation(
+        provider, rates,
+        JSON.stringify({ markdown: source.markdown, gpuPricing: source.gpuPricing }),
+        source.observedAt,
+        `${rates.length} published EUR GPU configurations with explicit hourly prices and GPU counts`,
+      );
+    }
     if (provider.id === "baseten") {
       if (
         !Array.isArray(source.buttons) ||
@@ -358,7 +378,7 @@ export async function collectProvider(provider: Provider) {
           : provider.id === "cloudru" && !rates.length
             ? cloudRuNoRatesReason
             : provider.id === "computegpu" && !rates.length
-              ? "Hourly listing prices found, but the source does not establish a per-GPU basis or minimum GPU count; excluded from per-GPU comparisons"
+              ? "GPU listing prices are estimated or lack an explicit per-GPU basis; excluded from per-GPU comparisons"
               : provider.id === "valdi"
                 ? `${rates.length} reserved GPU quotes from inventory page 1; minimum orders and commitments retained`
                 : `${rates.length} header-validated GPU rates`,

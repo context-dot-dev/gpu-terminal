@@ -16,7 +16,7 @@ export function parseComputeGpu(
     throw new Error("Source ComputeGpu available GPU catalogue is missing");
   const section = markdown.slice(start, end);
   if (
-    !/^\d+ models · \d+ available now$/m.test(section) ||
+    !/^(?:\d+ models · \d+ available now|\d+ GPUs available now across \d+ models)$/m.test(section) ||
     !markdown.includes("$ USD € EUR £ GBP") ||
     !markdown.includes("Instances bill per second of uptime.")
   )
@@ -28,7 +28,7 @@ export function parseComputeGpu(
     /^\[([^\]]+)\]\((https:\/\/computegpu\.com\/marketplace\?gpu=[^)]+)\)$/gm,
   )) {
     const listing = match[1].replace(/\\/g, "").replace(/\s+/g, " ").trim();
-    const row = /^(.*?)\s+(\d+(?:\.\d+)?)\s+GB\s+(\d+) available from \$(\d+(?:\.\d+)?)\/hr$/.exec(
+    const row = /^(.*?)\s+(\d+(?:\.\d+)?)\s+GB\s+(\d+) available (?:from|est\.) \$(\d+(?:\.\d+)?)\/hr$/.exec(
       listing,
     );
     if (!row)
