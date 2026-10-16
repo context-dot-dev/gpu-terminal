@@ -366,9 +366,7 @@ function MarketDashboard({
   const [compare, setCompare] = useState(false);
   const [method, setMethod] = useState(false);
   const [chartOpen, setChartOpen] = useState(false);
-  const compactCharts = useMediaQuery(
-    "(max-width: 767px), (max-height: 700px)",
-  );
+  const compactCharts = useMediaQuery("(max-width: 767px)");
   const wideLayout = useMediaQuery("(min-width: 1280px)");
   const [history, setHistory] = useState<HistoryPoint[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);

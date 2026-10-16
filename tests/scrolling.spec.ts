@@ -21,6 +21,7 @@ for (const viewport of [
       const history = page.locator(".history-pane");
       const providers = page.getByRole("group", { name: "Provider histories" });
       await expect(history).toBeVisible();
+      await page.getByLabel("Choose providers").click();
       expect(await history.evaluate((element) => element.scrollHeight - element.clientHeight))
         .toBeLessThan(2);
       expect(await providers.evaluate((element) => element.scrollHeight - element.clientHeight))
