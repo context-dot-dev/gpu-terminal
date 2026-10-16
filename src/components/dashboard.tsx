@@ -509,6 +509,12 @@ function MarketDashboard({
       .filter((r) => r.availability !== "Unavailable")
       .sort((a, b) => a.hourly - b.hourly)[0] ??
     filtered[0];
+  const chartFocusedId =
+    filtered.some((rate) => rate.id === focusedOffer)
+      ? focusedOffer
+      : filters.provider !== "all"
+        ? (focusedRate?.id ?? "")
+        : "";
   const compared = rates
     .filter((r) => selected.includes(r.id))
     .sort((a, b) => compareRates(a, b, comparisonSort));
@@ -1242,6 +1248,7 @@ function MarketDashboard({
                           }
                           currency={filters.currency}
                           activeId={focusedRate?.id ?? ""}
+                          highlightedId={chartFocusedId}
                           onFocus={(rate) => setFocusedOffer(rate.id)}
                         />
                       )}
@@ -1277,6 +1284,7 @@ function MarketDashboard({
                               }
                               currency={filters.currency}
                               activeId={focusedRate?.id ?? ""}
+                              highlightedId={chartFocusedId}
                               onFocus={(rate) => setFocusedOffer(rate.id)}
                             />
                           )}

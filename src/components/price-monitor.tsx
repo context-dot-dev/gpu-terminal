@@ -156,6 +156,7 @@ export function PriceMonitor({
   gpu,
   currency,
   activeId,
+  highlightedId,
   onFocus,
   comparisonRates,
   emptyState = "ready",
@@ -169,6 +170,7 @@ export function PriceMonitor({
   gpu: string;
   currency: string;
   activeId: string;
+  highlightedId: string;
   onFocus: (rate: Rate) => void;
 }) {
   const [range, setRange] = useState("7d");
@@ -252,7 +254,9 @@ export function PriceMonitor({
     chartMode === "providers" || chartMode === "selection";
   const plottedOffers = useMemo(() => {
     if (chartMode === "selection")
-      return providerOffers.filter((r) => selectedProviders.includes(r.id));
+      return providerOffers.filter(
+        (r) => selectedProviders.includes(r.id) || r.id === highlightedId,
+      );
     if (chartMode === "providers") return providerOffers;
     if (chartMode === "gpus")
       return [
@@ -275,6 +279,7 @@ export function PriceMonitor({
     selectedModels,
     providerOffers,
     selectedProviders,
+    highlightedId,
   ]);
   const ids = plottedOffers
     .map((r) => r.id)
@@ -710,6 +715,7 @@ export function PriceMonitor({
                         domain={chartDomain}
                         currency={currency}
                         selected={selectedOffers.map((r) => r.id)}
+                        focusedId={highlightedId}
                         onSelect={(id) =>
                           setSelectedProviders((previous) => {
                             const current = previous.filter((value) =>
