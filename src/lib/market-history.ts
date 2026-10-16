@@ -25,7 +25,7 @@ export async function cachedMarketHistory(
   end: string,
 ): Promise<MarketHistory | null> {
   "use cache";
-  cacheLife({ stale: 300, revalidate: 60, expire: 86400 });
+  cacheLife({ stale: 300, revalidate: 3600, expire: 86400 });
   const now = Date.now();
   const since =
     range === "custom"

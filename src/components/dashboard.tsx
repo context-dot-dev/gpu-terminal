@@ -427,7 +427,7 @@ function MarketDashboard({
       if (document.visibilityState === "visible") void refresh();
     };
     const initialSync = setTimeout(sync, 0);
-    const timer = setInterval(sync, 30000);
+    const timer = setInterval(sync, 300000);
     document.addEventListener("visibilitychange", sync);
     window.addEventListener("online", sync);
     return () => {
@@ -1897,7 +1897,7 @@ function MarketDashboard({
         </div>
         <footer className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-muted-foreground">
           <span>
-            Source checks run on schedule · Auto-sync 30s · Snapshot{" "}
+            Source checks run on schedule · Auto-sync 5m · Prices update hourly · Snapshot{" "}
             {mounted
               ? ago(snapshot.loadedAt, now)
               : snapshot.loadedAt.replace("T", " ").slice(0, 19) + " UTC"}

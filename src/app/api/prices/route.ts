@@ -9,10 +9,10 @@ export async function GET() {
     headers: {
       "CDN-Cache-Control": snapshot.error
         ? "no-store"
-        : "public, s-maxage=30, stale-while-revalidate=60",
+        : "public, s-maxage=3600, stale-while-revalidate=3600",
       "Cache-Control": snapshot.error
         ? "no-store"
-        : "public, max-age=15, stale-while-revalidate=60",
+        : "public, max-age=300, stale-while-revalidate=3600",
     },
   });
 }
