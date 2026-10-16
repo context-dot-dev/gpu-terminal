@@ -1,10 +1,12 @@
 import { test, expect } from "@playwright/test";
 
 // Failure cases: stale CSS leaves an unstyled masthead; navigation overlaps
-// search; a taller header clips the terminal; moving tabs breaks deep links.
+// search; a taller header clips the terminal; project links disappear at short
+// heights; moving tabs breaks deep links.
 for (const viewport of [
   { width: 1440, height: 1100 },
   { width: 1024, height: 768 },
+  { width: 1024, height: 640 },
   { width: 390, height: 844 },
   { width: 320, height: 640 },
 ]) {
@@ -22,6 +24,15 @@ for (const viewport of [
     await expect(page).toHaveTitle("gpu-terminal — GPU Cloud Price Monitor");
     await expect(brand).toContainText("gpu-terminal");
     await expect(brand).toHaveCSS("font-family", /Georgia/);
+    const projectLinks = page.getByRole("navigation", { name: "Project links" });
+    const visibleLinks = projectLinks.filter({ visible: true });
+    await expect(visibleLinks).toHaveCount(1);
+    await expect(visibleLinks.getByRole("link", { name: "Powered by Context.dev" }))
+      .toHaveAttribute("href", "https://context.dev/");
+    await expect(visibleLinks.getByRole("link", { name: "Open source" }))
+      .toHaveAttribute("href", "https://github.com/context-dot-dev/gpu-terminal");
+    await expect(visibleLinks.locator("img")).toBeVisible();
+    await expect(visibleLinks.locator("svg")).toBeVisible();
     const elements = [
       brand,
       header.getByRole("button", { name: /Search GPUs, providers/ }),

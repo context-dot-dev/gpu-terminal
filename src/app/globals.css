@@ -612,6 +612,54 @@ body {
   width: 32px;
   height: 32px;
 }
+.attribution-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.context-attribution,
+.source-attribution {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 0 11px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color 150ms, color 150ms;
+}
+.context-attribution {
+  background: #2663eb;
+  color: white;
+}
+.context-attribution:hover {
+  background: #1f56c7;
+}
+.context-attribution img,
+.source-attribution svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.source-attribution {
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
+}
+.source-attribution:hover {
+  background: var(--accent);
+  color: var(--foreground);
+}
+.attribution-links a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.mobile-attribution {
+  display: none;
+}
 .masthead-search {
   width: 152px;
 }
@@ -713,6 +761,10 @@ body {
   .masthead-actions button {
     padding-inline: 6px;
   }
+  .mobile-attribution {
+    display: inline-flex;
+    width: 100%;
+  }
   .market-utilities {
     padding-inline: 0;
   }
@@ -720,6 +772,11 @@ body {
 @media (max-height: 900px) and (min-width: 768px) {
   .terminal-masthead {
     padding-block: 10px;
+  }
+}
+@media (max-height: 700px) and (min-width: 768px) {
+  .terminal-main > footer {
+    display: flex;
   }
 }
 
