@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { collectDue } from "@/lib/collector";
 import { revalidateTag } from "next/cache";
+import { marketCacheTag } from "@/lib/db";
 export const maxDuration = 800;
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const collection = await collectDue();
-    revalidateTag("gpu-market", "max");
+    revalidateTag(marketCacheTag(), "max");
     return Response.json(
       collection,
       { headers: { "Cache-Control": "no-store" } },

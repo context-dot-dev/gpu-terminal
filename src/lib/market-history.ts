@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { database, getSnapshot } from "./db";
+import { database, getSnapshot, marketCacheTag } from "./db";
 import type { MarketHistory, Snapshot } from "./types";
 import { readFilters } from "./market-filters";
 import {
@@ -17,9 +17,9 @@ export const historyWindows = {
   "1y": 8760,
 } as const;
 
-async function cachedOfferHistory(id: string, start: string, end: string) {
+async function cachedOfferHistory(id: string, start: string, end: string, tag: string) {
   "use cache: remote";
-  cacheTag("gpu-market");
+  cacheTag(tag);
   cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
   const snapshot = await getSnapshot();
   const provider = snapshot?.providers.find((p) => p.rates.some((r) => r.id === id));
@@ -57,7 +57,7 @@ export async function cachedMarketHistory(
   end: string,
 ): Promise<MarketHistory> {
   "use cache";
-  cacheTag("gpu-market");
+  cacheTag(marketCacheTag());
   cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
   return getMarketHistory(ids, providerIds, range, start, end);
 }
@@ -84,10 +84,11 @@ export async function getMarketHistory(
     range === "custom" ? Math.min(now, Date.parse(end) + 86400000) : now,
   ).toISOString();
   const histories: Awaited<ReturnType<typeof cachedOfferHistory>>[] = [];
+  const tag = marketCacheTag();
   const pointLimit = Math.min(2000, Math.floor(30000 / Math.max(1, ids.length)));
   for (let i = 0; i < ids.length; i += 8) {
     histories.push(...await Promise.all(ids.slice(i, i + 8).map((id) =>
-      cachedOfferHistory(id, range === "custom" ? start : "", range === "custom" ? end : ""),
+      cachedOfferHistory(id, range === "custom" ? start : "", range === "custom" ? end : "", tag),
     )));
   }
   return {

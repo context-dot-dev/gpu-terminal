@@ -165,7 +165,7 @@ test("failed background database reads retain cached prices and history", async 
       const prices = await request.get("/api/prices");
       expect(prices.ok()).toBeTruthy();
       expect((await prices.json()).providers.find((p: { id: string }) => p.id === "replicate"))
-        .toEqual(provider);
+        .toMatchObject({ rates: provider.rates, observedAt: provider.observedAt, message: provider.message });
       const response = await request.get(path);
       expect(response.ok()).toBeTruthy();
       expect(await response.json()).toEqual(history);

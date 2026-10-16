@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
 import { cacheLife, cacheTag } from "next/cache";
 import { publishableRates } from "./quality";
@@ -7,6 +8,12 @@ import type { ProviderState, Rate, Snapshot } from "./types";
 export function database() {
   if (!process.env.DATABASE_URL) throw new Error("Database is not configured");
   return neon(process.env.DATABASE_URL);
+}
+
+export function marketCacheTag() {
+  const url = new URL(process.env.DATABASE_URL!);
+  const identity = `${url.hostname}${url.pathname}:${url.username}`;
+  return `gpu-market:${createHash("sha256").update(identity).digest("hex").slice(0, 16)}`;
 }
 
 let lastGoodSnapshot: Snapshot | undefined;
@@ -41,9 +48,9 @@ export function unavailableSnapshot(): Snapshot {
   };
 }
 
-async function cachedProviderBatch(ids: string[]) {
+async function cachedProviderBatch(ids: string[], tag: string) {
   "use cache: remote";
-  cacheTag("gpu-market");
+  cacheTag(tag);
   cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
   const rows = await database().query(
     "SELECT provider_id, checked_at, observed_at, status, message, rates FROM provider_state WHERE provider_id = ANY($1::text[])",
@@ -63,7 +70,8 @@ export async function getSnapshot(): Promise<Snapshot> {
       (_, i) =>
         collectibleProviders.slice(i * 25, i * 25 + 25).map((p) => p.id),
     );
-    const batches = await Promise.all(groups.map(cachedProviderBatch));
+    const tag = marketCacheTag();
+    const batches = await Promise.all(groups.map((ids) => cachedProviderBatch(ids, tag)));
     const rows = new Map(batches.flatMap((batch) => batch.rows)
       .map((row) => [row.provider_id, row]));
     const snapshot: Snapshot = {

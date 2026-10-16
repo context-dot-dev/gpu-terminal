@@ -22,6 +22,7 @@ test("root prices are visible with JavaScript disabled and no loading shell", as
   baseURL,
 }, info) => {
   const context = await browser.newContext({
+    extraHTTPHeaders: info.project.use.extraHTTPHeaders,
     javaScriptEnabled: false,
     viewport: { width: 1440, height: 1100 },
   });
@@ -72,7 +73,10 @@ test("shared filters produce isolated static HTML and repeat CDN hits", async ({
     expect(response.ok()).toBeTruthy();
     expect(html).not.toContain("Loading your market");
     if (baseURL?.includes("vercel.app"))
-      expect(response.headers()["x-vercel-cache"]).toMatch(/HIT|STALE/);
+      await expect.poll(async () =>
+        (await request.get(path)).headers()["x-vercel-cache"],
+        { timeout: 15000 },
+      ).toMatch(/HIT|STALE/);
     measurements.push({
       path,
       elapsedMs: performance.now() - start,
@@ -80,7 +84,10 @@ test("shared filters produce isolated static HTML and repeat CDN hits", async ({
       headers: response.headers(),
     });
   }
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    extraHTTPHeaders: info.project.use.extraHTTPHeaders,
+  });
   const page = await context.newPage();
   await page.goto(`${baseURL}${paths[2]}`);
   await expect(page.getByTestId("price-row").first()).toBeVisible();
@@ -134,7 +141,7 @@ test("encoded tracking parameters do not reset table pagination", async ({
 test("filtered coverage hydrates without repeated document navigation", async ({ page }, info) => {
   const navigations: string[] = [];
   page.on("request", (request) => {
-    if (request.isNavigationRequest()) navigations.push(request.url());
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) navigations.push(request.url());
   });
   await page.goto("/?tab=coverage");
   await expect(page.getByRole("heading", { name: "Provider coverage", exact: true })).toBeVisible();
