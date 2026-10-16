@@ -519,5 +519,9 @@ export async function collectDue() {
     )
       break;
   }
-  return { results, due: due.length, remaining: due.length - results.length };
+  return {
+    results,
+    due: due.length,
+    remaining: due.length - results.filter((result) => result.status !== "busy").length,
+  };
 }
