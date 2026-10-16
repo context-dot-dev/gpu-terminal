@@ -228,7 +228,7 @@ const sources: [string, string, string, ProviderKind][] = [
   ],
   ["leafcloud", "Leafcloud", "https://www.leaf.cloud/pricing", "GPU cloud"],
   ["exoscale", "Exoscale", "https://www.exoscale.com/pricing/", "GPU cloud"],
-  ["akamai", "Akamai Cloud", "https://www.linode.com/pricing/", "GPU cloud"],
+  ["akamai", "Akamai Cloud", "https://www.akamai.com/cloud/pricing/gpu", "GPU cloud"],
   ["runcrate", "Runcrate", "https://runcrate.ai/pricing", "GPU cloud"],
   ["canopy", "Canopy Wave", "https://canopywave.com/pricing", "GPU cloud"],
   ["bentaus", "Bentaus", "https://bentaus.com/", "GPU cloud"],
