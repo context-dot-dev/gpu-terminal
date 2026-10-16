@@ -170,7 +170,7 @@ test("comparison preserves configuration and billing details", async ({
 test("saved shortlist persists in browser and empty state works", async ({
   page,
 }) => {
-  await page.goto("/?family=H100&provider=nebius");
+  await page.goto("/?family=H100&provider=nebius&fresh=false");
   await page
     .getByTestId("price-row")
     .first()

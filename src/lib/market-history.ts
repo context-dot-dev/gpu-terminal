@@ -1,4 +1,4 @@
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheLife, cacheTag, unstable_cache } from "next/cache";
 import { database, getSnapshot, marketCacheTag } from "./db";
 import type { MarketHistory, Snapshot } from "./types";
 import { readFilters } from "./market-filters";
@@ -17,36 +17,50 @@ export const historyWindows = {
   "1y": 8760,
 } as const;
 
-async function cachedOfferHistory(id: string, start: string, end: string, tag: string) {
-  "use cache: remote";
-  cacheTag(tag);
-  cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
-  const snapshot = await getSnapshot();
-  const provider = snapshot?.providers.find((p) => p.rates.some((r) => r.id === id));
-  const until = end
-    ? new Date(Math.min(Date.now(), Date.parse(end) + 86400000)).toISOString()
-    : new Date().toISOString();
-  const rows = await database().query(
-    `SELECT o.provider_id, o.observed_at AS at, r->>'hourly' AS hourly,
+async function cachedOfferHistory(
+  id: string,
+  provider: string,
+  start: string,
+  end: string,
+  tag: string,
+) {
+  return unstable_cache(
+    async () => {
+      const until = end
+        ? new Date(
+            Math.min(Date.now(), Date.parse(end) + 86400000),
+          ).toISOString()
+        : new Date().toISOString();
+      const rows = await database().query(
+        `SELECT o.provider_id, o.observed_at AS at, r->>'hourly' AS hourly,
       r->>'currency' AS currency
      FROM observations o CROSS JOIN LATERAL jsonb_array_elements(o.rates) r
      WHERE ($1::text IS NULL OR o.provider_id = $1)
        AND o.observed_at >= $2::timestamptz AND o.observed_at <= $3::timestamptz
        AND r->>'id' = $4
      ORDER BY o.observed_at DESC LIMIT 2001`,
-    [provider?.id ?? null, start || "1970-01-01", until, id],
-    { fetchOptions: { signal: AbortSignal.timeout(15000) } },
-  );
-  return {
-    loadedAt: new Date().toISOString(),
-    points: rows.reverse().filter((row) => Number.isFinite(Number(row.hourly)) && Number(row.hourly) > 0)
-      .map((row) => ({
-        providerId: row.provider_id as string,
-        at: row.at as string,
-        hourly: Number(row.hourly),
-        currency: row.currency as string,
-      })),
-  };
+        [provider || null, start || "1970-01-01", until, id],
+        { fetchOptions: { signal: AbortSignal.timeout(15000) } },
+      );
+      return {
+        loadedAt: new Date().toISOString(),
+        points: rows
+          .reverse()
+          .filter(
+            (row) =>
+              Number.isFinite(Number(row.hourly)) && Number(row.hourly) > 0,
+          )
+          .map((row) => ({
+            providerId: row.provider_id as string,
+            at: row.at as string,
+            hourly: Number(row.hourly),
+            currency: row.currency as string,
+          })),
+      };
+    },
+    ["offer-history", tag, id, provider, start, end],
+    { tags: [tag], revalidate: 1800 },
+  )();
 }
 
 export async function cachedMarketHistory(
@@ -85,26 +99,53 @@ export async function getMarketHistory(
   ).toISOString();
   const histories: Awaited<ReturnType<typeof cachedOfferHistory>>[] = [];
   const tag = marketCacheTag();
-  const pointLimit = Math.min(2000, Math.floor(30000 / Math.max(1, ids.length)));
+  const snapshot = await getSnapshot();
+  const offerProviders = new Map(
+    snapshot.providers.flatMap((p) =>
+      p.rates.map((r) => [r.id, p.id] as const),
+    ),
+  );
+  const pointLimit = Math.min(
+    2000,
+    Math.floor(30000 / Math.max(1, ids.length)),
+  );
   for (let i = 0; i < ids.length; i += 8) {
-    histories.push(...await Promise.all(ids.slice(i, i + 8).map((id) =>
-      cachedOfferHistory(id, range === "custom" ? start : "", range === "custom" ? end : "", tag),
-    )));
+    histories.push(
+      ...(await Promise.all(
+        ids
+          .slice(i, i + 8)
+          .map((id) =>
+            cachedOfferHistory(
+              id,
+              offerProviders.get(id) ?? "",
+              range === "custom" ? start : "",
+              range === "custom" ? end : "",
+              tag,
+            ),
+          ),
+      )),
+    );
   }
   return {
     window: { start: since, end: until },
     series: ids.map((id, index) => {
-      const points = histories[index].points.filter((point) =>
-        providerIds.includes(point.providerId) &&
-        Date.parse(point.at) >= Date.parse(since) && Date.parse(point.at) <= Date.parse(until),
+      const points = histories[index].points.filter(
+        (point) =>
+          providerIds.includes(point.providerId) &&
+          Date.parse(point.at) >= Date.parse(since) &&
+          Date.parse(point.at) <= Date.parse(until),
       );
       return {
         id,
         truncated: points.length > pointLimit,
-        points: points.slice(-pointLimit).map(({ at, hourly, currency }) => ({ at, hourly, currency })),
+        points: points
+          .slice(-pointLimit)
+          .map(({ at, hourly, currency }) => ({ at, hourly, currency })),
       };
     }),
-    loadedAt: histories.map((history) => history.loadedAt).sort()[0] ?? new Date().toISOString(),
+    loadedAt:
+      histories.map((history) => history.loadedAt).sort()[0] ??
+      new Date().toISOString(),
   };
 }
 
