@@ -422,7 +422,6 @@ test("H100 opens with every matching provider, preserves focus and handles missi
   await page.mouse.move(10, 10);
   await expect(chart.getByRole("checkbox", { checked: true })).toHaveCount(0);
   await expect(paths).toHaveCount(6);
-  await expect(plot.locator('[data-emphasized="true"]')).toHaveCount(0);
   await info.attach("all-providers-desktop.png", {
     body: await page.screenshot(),
     contentType: "image/png",

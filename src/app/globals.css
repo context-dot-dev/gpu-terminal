@@ -174,17 +174,14 @@
 
 html,
 body {
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
+  min-height: 100%;
+  overflow-x: hidden;
 }
 .terminal {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100dvh;
-  min-height: 0;
-  overflow: hidden;
+  min-height: 100dvh;
 }
 .terminal > nav,
 .terminal > header,
@@ -196,21 +193,17 @@ body {
 .terminal-workspace {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
 }
 .terminal-workspace > :not([data-slot="tabs-content"]) {
   flex-shrink: 0;
 }
 .terminal-main [data-slot="tabs-content"] {
   min-height: 0;
-  overflow: hidden;
   margin-top: 0;
 }
 .market-layout {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
   gap: 8px;
 }
 .terminal-content {
@@ -224,9 +217,7 @@ body {
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  min-height: 0;
   gap: 8px;
-  overflow: hidden;
   padding: 10px;
   background: var(--card);
   border-radius: 10px;
@@ -271,10 +262,6 @@ body {
 }
 .history-pane {
   flex: none;
-  min-height: 0;
-  max-height: 50%;
-  overflow: auto;
-  overscroll-behavior: contain;
 }
 .history-pane .price-monitor {
   padding: 0;
@@ -282,11 +269,6 @@ body {
 }
 .history-pane .history-plot {
   height: clamp(100px, 15vh, 200px);
-}
-@media (min-height: 1000px) {
-  .history-pane:has([data-history-scope="providers"], [data-history-scope="selection"]) {
-    max-height: 60%;
-  }
 }
 .provider-line-plot {
   position: relative;
@@ -344,9 +326,6 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 0 16px;
-  max-height: 180px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 .provider-history-row {
   display: grid;
@@ -365,9 +344,6 @@ body {
   .provider-line-plot {
     height: 260px;
   }
-  .provider-history-scroll {
-    max-height: 144px;
-  }
   .provider-history-row {
     min-height: 44px;
   }
@@ -380,9 +356,6 @@ body {
   display: none;
 }
 .table-frame {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -395,11 +368,12 @@ body {
   min-height: 0;
 }
 .table-frame [data-slot="table-container"] {
-  height: 100%;
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-  overflow-anchor: none;
+  overflow: visible;
+}
+@media (max-width: 1279px) {
+  .table-frame [data-slot="table-container"] {
+    overflow-x: auto;
+  }
 }
 .table-frame [data-slot="table-header"] {
   position: sticky;
@@ -433,8 +407,6 @@ body {
   outline-offset: -1px;
 }
 .coverage-layout {
-  height: 100%;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -473,7 +445,7 @@ body {
     grid-row: 1;
   }
 }
-@media (max-width: 767px), (max-height: 700px) {
+@media (max-width: 767px) {
   .history-pane {
     display: none;
   }

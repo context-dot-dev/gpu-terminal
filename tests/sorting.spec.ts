@@ -46,7 +46,7 @@ async function openFixture(page: Page) {
   await expect(page.getByTestId("price-row").first()).toContainText("Fixture");
 }
 
-test("offer headers sort the whole result, reset pagination and preserve the fixed workspace", async ({
+test("offer headers sort the whole result, reset pagination and keep rows in view", async ({
   page,
 }, info) => {
   await openFixture(page);
@@ -94,7 +94,7 @@ test("offer headers sort the whole result, reset pagination and preserve the fix
     .getByRole("button", { name: "Sort by Checked", exact: true })
     .click();
   await expect(first).toContainText("H100 Fixture 32");
-  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(first).toBeInViewport();
   await info.attach("sorted-offers.png", {
     body: await page.screenshot(),
     contentType: "image/png",

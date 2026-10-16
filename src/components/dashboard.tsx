@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -348,7 +347,6 @@ function MarketDashboard({
     key: "provider",
     direction: "asc",
   });
-  const coveragePane = useRef<HTMLDivElement>(null);
   const [pagination, setPagination] = useState({
     query,
     page: 0,
@@ -368,9 +366,7 @@ function MarketDashboard({
   const [compare, setCompare] = useState(false);
   const [method, setMethod] = useState(false);
   const [chartOpen, setChartOpen] = useState(false);
-  const compactCharts = useMediaQuery(
-    "(max-width: 767px), (max-height: 700px)",
-  );
+  const compactCharts = useMediaQuery("(max-width: 767px)");
   const wideLayout = useMediaQuery("(min-width: 1280px)");
   const [history, setHistory] = useState<HistoryPoint[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -580,16 +576,6 @@ function MarketDashboard({
   const activeCount = Object.entries(filters).filter(
     ([key, v]) => v !== initialFilters[key as keyof Filters],
   ).length;
-  useLayoutEffect(() => {
-    marketPane.current
-      ?.querySelector('[data-slot="table-container"]')
-      ?.scrollTo({ top: 0 });
-  }, [filters, sort, tab, page]);
-  useLayoutEffect(() => {
-    coveragePane.current
-      ?.querySelector('[data-slot="table-container"]')
-      ?.scrollTo({ top: 0 });
-  }, [coverageSort, coverageQuery, coverageStatus]);
   function changeSort(key: RateSortKey) {
     setSort((current) => nextSort(current, key));
     setPage(0);
@@ -612,6 +598,9 @@ function MarketDashboard({
   }
   function changePage(nextPage: number) {
     setPage(nextPage);
+    marketPane.current
+      ?.querySelector('[data-slot="table-container"]')
+      ?.scrollIntoView({ block: "start" });
   }
   function inspectRate(rate: Rate) {
     setHistory([]);
@@ -1751,7 +1740,7 @@ function MarketDashboard({
             </TabsContent>
           ))}
           <TabsContent value="coverage" className="coverage-tab">
-            <div className="coverage-layout" ref={coveragePane}>
+            <div className="coverage-layout">
               <div>
                 <h2 className="text-xl font-semibold tracking-tight">
                   Provider coverage

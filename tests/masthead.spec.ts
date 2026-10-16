@@ -68,7 +68,7 @@ for (const viewport of [
     await page.keyboard.press("Escape");
     expect(
       await page.evaluate(() => document.documentElement.scrollHeight),
-    ).toBe(viewport.height);
+    ).toBeGreaterThan(viewport.height);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(viewport.width);
