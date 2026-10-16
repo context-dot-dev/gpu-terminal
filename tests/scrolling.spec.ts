@@ -5,6 +5,7 @@ for (const viewport of [
   { width: 1440, height: 600 },
   { width: 1024, height: 768 },
   { width: 390, height: 844 },
+  { width: 844, height: 390 },
 ]) {
   test(`chart and offers use page scrolling at ${viewport.width}x${viewport.height}`, async ({ page }, info) => {
     await page.setViewportSize(viewport);
@@ -97,4 +98,21 @@ test("mobile table keeps horizontal scrolling while vertical swipes move the pag
   await expect.poll(() => table.evaluate((element) => element.scrollLeft))
     .toBeGreaterThan(50);
   await context.close();
+});
+
+test("short windows retain filters, comparisons, and empty-state recovery", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 480 });
+  await page.goto("/");
+  await expect(page.getByRole("region", { name: "GPU offers", exact: true })).toBeVisible();
+  await expect(page.getByTestId("price-history-chart")).toBeVisible();
+  await page.setViewportSize({ width: 844, height: 390 });
+  await page.getByRole("button", { name: "Configure filters" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.getByRole("textbox", { name: "Search GPU prices" }).fill("no-such-gpu-test-xyz");
+  await page.getByRole("button", { name: "Explore all prices" }).click();
+  await expect(page.getByTestId("price-row").first()).toBeVisible();
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.getByRole("button", { name: "Compare providers", exact: true }).click();
+  await expect(page.getByRole("region", { name: "GPU offers", exact: true })).toBeVisible();
 });

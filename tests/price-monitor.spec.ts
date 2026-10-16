@@ -213,15 +213,15 @@ test("terminal selection synchronizes offer evidence, history and shared GPU fil
     await page.evaluate(() => window.scrollTo(0, 0));
     expect(
       await page.evaluate(() => document.documentElement.scrollHeight),
-    ).toBeLessThanOrEqual(viewport.height);
+    ).toBeGreaterThan(viewport.height);
     await page.mouse.move(4, 4);
     await page.mouse.wheel(0, 800);
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
     for (const chart of [page.getByTestId("price-history-chart")]) {
+      await chart.scrollIntoViewIfNeeded();
       const box = await chart.boundingBox();
       expect(box).not.toBeNull();
-      expect(box!.y).toBeGreaterThanOrEqual(0);
-      expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height);
+      await expect(chart).toBeInViewport();
       const panelBounds = await page.getByRole("tabpanel").boundingBox();
       expect(box!.y + box!.height).toBeLessThanOrEqual(
         panelBounds!.y + panelBounds!.height,
@@ -239,7 +239,7 @@ test("terminal selection synchronizes offer evidence, history and shared GPU fil
   await page.setViewportSize({ width: 390, height: 844 });
   expect(
     await page.evaluate(() => document.documentElement.scrollHeight),
-  ).toBeLessThanOrEqual(844);
+  ).toBeGreaterThan(844);
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(390);
