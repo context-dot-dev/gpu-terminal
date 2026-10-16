@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { collectAzure } from "./azure";
 import { collectAws } from "./aws";
+import { collectRuncrate } from "./runcrate";
 import { parseHuggingFace } from "./huggingface";
 import { parseGoogle } from "./google";
 import { parseBaseten } from "./baseten";
@@ -115,7 +116,11 @@ const tableParsers: Partial<
 };
 const parserVersion = "2026-10-07-v3";
 const parserVersionFor = (provider: Provider) =>
-  provider.id === "nebius" ? "2026-10-16-nebius-vram" : parserVersion;
+  provider.id === "nebius"
+    ? "2026-10-16-nebius-vram"
+    : provider.id === "runcrate"
+      ? "2026-10-16-runcrate-api"
+      : parserVersion;
 const normalizeText = (s: string) =>
   s.replace(/\\/g, "").replace(/\s+/g, " ").trim();
 
@@ -313,6 +318,17 @@ export async function collectProvider(provider: Provider) {
     await sql`UPDATE provider_state SET lease_until = now() + interval '5 minutes' WHERE provider_id = ${provider.id} AND (lease_until IS NULL OR lease_until < now()) RETURNING rates, source_hash, parser_version, message, status`;
   if (!lease.length) return { id: provider.id, status: "busy", count: 0 };
   try {
+    if (provider.id === "runcrate") {
+      const result = await collectRuncrate();
+      return await saveObservation(
+        provider,
+        result.rates,
+        result.document,
+        result.observedAt,
+        `${result.rates.length} live rates from the provider's public GPU pricing API`,
+        result.sourceUrl,
+      );
+    }
     if (provider.id === "azure" || provider.id === "aws") {
       const result = await (provider.id === "azure"
         ? collectAzure()
