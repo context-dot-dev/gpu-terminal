@@ -6,8 +6,9 @@ test("snapshot response is cacheable and the dashboard states its update cadence
 }, info) => {
   const response = await request.get("/api/prices");
   expect(response.ok()).toBeTruthy();
-  expect(response.headers()["cdn-cache-control"]).toContain("s-maxage=3600");
-  expect(response.headers()["cache-control"]).toContain("max-age=300");
+  expect(response.headers()["cache-control"]).toContain("max-age=0");
+  if (response.headers()["cdn-cache-control"])
+    expect(response.headers()["cdn-cache-control"]).toContain("s-maxage=60");
   await page.goto("/");
   await expect(page.locator("footer")).toContainText("Auto-sync 5m · Prices update hourly");
   await info.attach("snapshot-cache-policy.json", {

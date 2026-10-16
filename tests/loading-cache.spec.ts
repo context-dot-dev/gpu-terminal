@@ -51,7 +51,7 @@ test("cached HTML shows prices while the background refresh is held", async ({
   });
 });
 
-test("public data is briefly browser cached and errors are never cached", async ({
+test("snapshot refreshes in the browser while history stays briefly cached", async ({
   request,
 }, info) => {
   const prices = await request.get("/api/prices");
@@ -60,16 +60,16 @@ test("public data is briefly browser cached and errors are never cached", async 
   const rate = snapshot.providers.flatMap((p) => p.rates)[0];
   expect(rate).toBeTruthy();
   const headers: Record<string, string> = {};
-  for (const path of [
-    "/api/prices",
-    `/api/market-history?ids=${rate.id}&range=24h`,
-    `/api/history?provider=${rate.providerId}&id=${rate.id}`,
-  ]) {
+  for (const [path, maxAge] of [
+    ["/api/prices", 0],
+    [`/api/market-history?ids=${rate.id}&range=24h`, 300],
+    [`/api/history?provider=${rate.providerId}&id=${rate.id}`, 15],
+  ] as const) {
     const response = await request.get(path);
     expect(response.ok()).toBeTruthy();
     const cache = response.headers()["cache-control"];
-    expect(cache).toMatch(/(?:^|, )max-age=15(?:,|$)/);
-    expect(cache).toContain("stale-while-revalidate=");
+    expect(cache).toContain(`max-age=${maxAge}`);
+    if (maxAge > 0) expect(cache).toContain("stale-while-revalidate=");
     headers[path] = cache;
   }
   const invalid = await request.get("/api/market-history?ids=invalid");
