@@ -114,6 +114,8 @@ const tableParsers: Partial<
   greenaicloud: parseGreenAi,
 };
 const parserVersion = "2026-10-07-v3";
+const parserVersionFor = (provider: Provider) =>
+  provider.id === "nebius" ? "2026-10-16-nebius-vram" : parserVersion;
 const normalizeText = (s: string) =>
   s.replace(/\\/g, "").replace(/\s+/g, " ").trim();
 
@@ -285,7 +287,7 @@ async function saveObservation(
   await sql.transaction([
     sql`INSERT INTO source_documents(hash, provider_id, source_url, markdown) VALUES (${hash}, ${provider.id}, ${sourceUrl}, ${document}) ON CONFLICT DO NOTHING`,
     sql`INSERT INTO observations(provider_id, observed_at, rates, source_hash) VALUES (${provider.id}, ${observedAt}, ${JSON.stringify(rates)}::jsonb, ${hash}) ON CONFLICT DO NOTHING`,
-    sql`UPDATE provider_state SET checked_at=now(), observed_at=${observedAt}, status=${rates.length ? "ok" : "no-rates"}, message=${message}, rates=${JSON.stringify(rates)}::jsonb, lease_until=NULL, source_hash=${hash}, parser_version=${parserVersion} WHERE provider_id=${provider.id}`,
+    sql`UPDATE provider_state SET checked_at=now(), observed_at=${observedAt}, status=${rates.length ? "ok" : "no-rates"}, message=${message}, rates=${JSON.stringify(rates)}::jsonb, lease_until=NULL, source_hash=${hash}, parser_version=${parserVersionFor(provider)} WHERE provider_id=${provider.id}`,
   ]);
   return {
     id: provider.id,
@@ -387,7 +389,7 @@ export async function collectProvider(provider: Provider) {
     const hash = createHash("sha256").update(source.markdown).digest("hex");
     if (
       lease[0].source_hash === hash &&
-      lease[0].parser_version === parserVersion
+      lease[0].parser_version === parserVersionFor(provider)
     ) {
       const rates = publishableRates(
         (lease[0].rates as Rate[]).map((r) => ({
@@ -457,7 +459,7 @@ export async function collectDue(limit = 12) {
   const scheduledAt = Date.now();
   const startDeadline = scheduledAt + 80000;
   const rows =
-    await database()`SELECT provider_id, checked_at, status, message FROM provider_state`;
+    await database()`SELECT provider_id, checked_at, status, message, parser_version FROM provider_state`;
   const interval = (provider: Provider) => {
     const row = rows.find((r) => r.provider_id === provider.id);
     return row?.status === "error" && row.message?.includes("HTTP 429")
@@ -470,10 +472,16 @@ export async function collectDue(limit = 12) {
       const row = rows.find((r) => r.provider_id === p.id);
       return (
         !row?.checked_at ||
+        row.parser_version !== parserVersionFor(p) ||
         scheduledAt - Date.parse(row.checked_at) > interval(p)
       );
     })
     .sort((a, b) => {
+      const needsParserRefresh = (provider: Provider) =>
+        rows.find((row) => row.provider_id === provider.id)?.parser_version !==
+        parserVersionFor(provider);
+      if (needsParserRefresh(a) !== needsParserRefresh(b))
+        return needsParserRefresh(a) ? -1 : 1;
       const time = (id: string) =>
         Date.parse(
           rows.find((r) => r.provider_id === id)?.checked_at ?? "1970-01-01",

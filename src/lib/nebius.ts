@@ -99,7 +99,7 @@ export function parseNebius(
           .slice(0, 24),
         providerId: "nebius",
         gpu,
-        vramGb: null,
+        vramGb: gpu === "NVIDIA HGX B200" ? 180 : null,
         gpuCount: null,
         vcpus: /^\d+$/.test(row[1]) ? Number(row[1]) : null,
         ramGb: /^\d+$/.test(row[2]) ? Number(row[2]) : null,
@@ -114,7 +114,7 @@ export function parseNebius(
         priceType: quoted[1] ? "Starting at" : "Exact",
         availability: "Not verified",
         evidence: `${header.join("\n\n")}\n\n${row.join("\n\n")}`,
-        notes: `${terms} Published price is per GPU-hour. Host resources shown: ${row[1]} vCPUs, ${row[2]} GB RAM; these are not GPU count or VRAM. Minimum GPU count and region are not stated here. Storage is priced separately.`,
+        notes: `${terms} Published price is per GPU-hour. Host resources shown: ${row[1]} vCPUs, ${row[2]} GB RAM; these are not GPU count or VRAM. ${gpu === "NVIDIA HGX B200" ? "180 GB VRAM per B200 GPU is from NVIDIA's HGX hardware specification (https://docs.nvidia.com/enterprise-reference-architectures/hgx-ai-factory-h100-h200-b200/latest/components.html), not Nebius pricing. " : ""}Minimum GPU count and region are not stated here. Storage is priced separately.`,
         sourceUrl,
         observedAt,
       });

@@ -69,11 +69,11 @@ test("offer headers sort the whole result, reset pagination and preserve the fix
   await page.keyboard.press("Enter");
   await expect(first).toContainText("H100 Fixture 1");
   await table
-    .getByRole("button", { name: "Sort by Memory", exact: true })
+    .getByRole("button", { name: "Sort by GPU VRAM", exact: true })
     .click();
   await expect(first).toContainText("H100 Fixture 1");
   await table
-    .getByRole("button", { name: "Sort by Memory", exact: true })
+    .getByRole("button", { name: "Sort by GPU VRAM", exact: true })
     .click();
   await expect(first).toContainText("H100 Fixture 31");
   await page.getByRole("button", { name: "Next page", exact: true }).click();
