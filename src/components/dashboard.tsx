@@ -1106,7 +1106,7 @@ function MarketDashboard({
             </span>
           </Button>
         </div>
-        <AttributionLinks className="mobile-attribution" />
+        <AttributionLinks className="masthead-attribution" />
       </header>
       <main className="terminal-main flex flex-col gap-2 px-2 pb-2 pt-2">
         <h1 className="sr-only">GPU market monitor</h1>
@@ -1896,7 +1896,6 @@ function MarketDashboard({
           </TabsContent>
         </div>
         <footer className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-muted-foreground">
-          <AttributionLinks className="desktop-attribution" />
           <span>
             Source checks run on schedule · Auto-sync 30s · Snapshot{" "}
             {mounted
