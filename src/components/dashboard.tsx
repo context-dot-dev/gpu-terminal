@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { track } from "@databuddy/sdk";
 import { useQueryStates } from "nuqs";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -609,10 +610,12 @@ function MarketDashboard({
     setDetail(rate);
   }
   function toggleSaved(id: string) {
-    const next = saved.includes(id)
+    const isSaved = saved.includes(id);
+    const next = isSaved
       ? saved.filter((s) => s !== id)
       : [...saved, id];
     setSaved(next);
+    if (!isSaved) track("offer_saved");
     try {
       localStorage.setItem("gpu-atlas-saved", JSON.stringify(next));
     } catch {
@@ -681,6 +684,7 @@ function MarketDashboard({
     link.href = url;
     link.download = `gpu-terminal-${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
+    track("csv_exported");
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   async function share() {
@@ -1722,7 +1726,13 @@ function MarketDashboard({
                         <span className="text-xs">
                           {selected.length} of 4 offers selected
                         </span>
-                        <Button size="sm" onClick={() => setCompare(true)}>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setCompare(true);
+                            track("comparison_opened");
+                          }}
+                        >
                           Compare selected
                         </Button>
                         <Button
