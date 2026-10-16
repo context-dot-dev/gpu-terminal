@@ -88,10 +88,10 @@ export function OfferPanel({
                     "GPU VRAM",
                     rate.vramGb ? `${rate.vramGb} GB / GPU` : "Unknown",
                   ],
-                  ["vCPUs", rate.vcpus ? `${rate.vcpus} vCPUs` : "Unknown"],
+                  ["vCPUs", rate.vcpus ?? "Unknown"],
                   [
                     "Host RAM",
-                    rate.ramGb ? `${rate.ramGb} GB host RAM` : "Unknown",
+                    rate.ramGb ? `${rate.ramGb} GB` : "Unknown",
                   ],
                   [
                     "Configuration",

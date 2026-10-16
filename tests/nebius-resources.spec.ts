@@ -19,8 +19,8 @@ test("Nebius B200 exposes GPU memory and published host resources", async ({ pag
     body: await page.screenshot(), contentType: "image/png",
   });
   const selected = page.getByTestId("selected-offer-panel");
-  await expect(selected).toContainText("20 vCPUs");
-  await expect(selected).toContainText("224 GB host RAM");
+  await expect(selected.getByText("20", { exact: true })).toBeVisible();
+  await expect(selected.getByText("224 GB", { exact: true })).toBeVisible();
   await expect(selected).toContainText("180 GB / GPU");
   expect(b200.vramGb).toBe(180);
 });

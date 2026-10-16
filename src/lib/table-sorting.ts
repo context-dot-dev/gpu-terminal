@@ -32,7 +32,7 @@ export const rateSortFields = [
   { key: "price", label: "Price", numeric: true },
   { key: "gpu", label: "GPU", numeric: false },
   { key: "provider", label: "Provider", numeric: false },
-  { key: "memory", label: "Memory", numeric: true },
+  { key: "memory", label: "GPU VRAM", numeric: true },
   { key: "vcpus", label: "vCPUs", numeric: true },
   { key: "ram", label: "Host RAM", numeric: true },
   { key: "count", label: "Required GPUs", numeric: true },
