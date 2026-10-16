@@ -19,9 +19,11 @@ test("GPU ticker moves left, loops, pauses and keeps navigation usable", async (
   await ticker.hover();
   await expect(track).toHaveCSS("animation-play-state", "paused");
   await track.evaluate((element) => Promise.all(element.getAnimations().map((animation) => animation.ready)).then(() => undefined));
-  const stopped = await x();
+  const animationTime = () =>
+    track.evaluate((element) => element.getAnimations()[0].currentTime);
+  const stopped = await animationTime();
   await page.waitForTimeout(200);
-  expect(await x()).toBeCloseTo(stopped, 0);
+  expect(await animationTime()).toBe(stopped);
   await page.mouse.move(700, 200);
   const groups = track.locator(".market-ticker-group");
   const widths = await groups.evaluateAll((nodes) =>
