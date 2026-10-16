@@ -9,11 +9,15 @@ const noStore = { "Cache-Control": "no-store" };
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const ids = (params.get("ids") ?? "").split(",");
+  const requestedProviders = params.get("providers")?.split(",");
   const range = params.get("range") ?? "7d";
   if (
     ids.length > providers.length ||
     ids.some((id) => !/^[a-f0-9]{24}$/.test(id)) ||
     new Set(ids).size !== ids.length ||
+    (requestedProviders &&
+      (requestedProviders.length > providers.length ||
+        requestedProviders.some((id) => !providers.some((p) => p.id === id)))) ||
     (!Object.hasOwn(windows, range) && range !== "all" && range !== "custom")
   )
     return Response.json(
@@ -50,15 +54,15 @@ export async function GET(request: Request) {
   try {
     const history = await cachedMarketHistory(
       [...ids].sort(),
+      requestedProviders
+        ? [...new Set(requestedProviders)].sort()
+        : providers
+            .filter((p) => p.trackingScope === "gpu-hourly")
+            .map((p) => p.id),
       range,
       range === "custom" ? params.get("start")! : "",
       range === "custom" ? params.get("end")! : "",
     );
-    if (!history)
-      return Response.json(
-        { error: "An offer is no longer published; refresh prices" },
-        { status: 400, headers: noStore },
-      );
     return Response.json(history, {
       headers: {
         "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",

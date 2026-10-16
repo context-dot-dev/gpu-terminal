@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import type { Snapshot } from "../src/lib/types";
 
-test("monitor history rejects invalid requests and returns only recorded prices for current offers", async ({
+test("monitor history rejects invalid requests and returns recorded prices", async ({
   request,
 }, info) => {
   for (const query of [
@@ -57,6 +57,30 @@ test("monitor history rejects invalid requests and returns only recorded prices 
   }
   await info.attach("recorded-market-history.json", {
     body: JSON.stringify(history, null, 2),
+    contentType: "application/json",
+  });
+});
+
+test("a well-formed offer missing from the current snapshot does not fail history", async ({
+  request,
+}, info) => {
+  const id = "f".repeat(24);
+  const response = await request.get(
+    `/api/market-history?ids=${id}&providers=replicate&range=24h`,
+  );
+  expect(response.status()).toBe(200);
+  const history = await response.json();
+  expect(history.series).toEqual([{ id, truncated: false, points: [] }]);
+
+  const single = await request.get(`/api/history?id=${id}&provider=replicate`);
+  expect(single.status()).toBe(200);
+  expect(await single.json()).toEqual({ points: [] });
+  await info.attach("unpublished-offer-history.json", {
+    body: JSON.stringify(
+      { market: history, singleStatus: single.status() },
+      null,
+      2,
+    ),
     contentType: "application/json",
   });
 });

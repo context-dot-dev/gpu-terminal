@@ -109,8 +109,20 @@ export function MarketTicker({
     );
     Promise.allSettled(
       batches.map(async (batch) => {
+        const providerIds = [
+          ...new Set(
+            entries
+              .filter((entry) => entry.best && batch.includes(entry.best.id))
+              .map((entry) => entry.best!.providerId),
+          ),
+        ];
+        const query = new URLSearchParams({
+          ids: batch.join(","),
+          providers: providerIds.join(","),
+          range: "24h",
+        });
         const response = await fetch(
-          `/api/market-history?ids=${batch.join(",")}&range=24h`,
+          `/api/market-history?${query}`,
           { signal: controller.signal },
         );
         if (!response.ok) throw new Error("History unavailable");
@@ -139,7 +151,7 @@ export function MarketTicker({
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [ids, requestKey, snapshot.loadedAt]);
+  }, [ids, requestKey, snapshot.loadedAt, entries]);
 
   return (
     <nav

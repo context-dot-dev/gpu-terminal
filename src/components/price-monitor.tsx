@@ -285,6 +285,9 @@ export function PriceMonitor({
     .map((r) => r.id)
     .sort()
     .join(",");
+  const providerIds = [...new Set(plottedOffers.map((r) => r.providerId))]
+    .sort()
+    .join(",");
   const requestKey = `${ids}:${range}:${dates.start}:${dates.end}`;
   const retryHistory = () => {
     setResults((previous) => {
@@ -311,6 +314,7 @@ export function PriceMonitor({
     let active = true;
     const query = new URLSearchParams({
       ids,
+      providers: providerIds,
       range,
       ...(range === "custom" ? dates : {}),
     }).toString();
@@ -341,7 +345,16 @@ export function PriceMonitor({
     return () => {
       active = false;
     };
-  }, [ids, range, requestKey, dates, loadedAt, initialHistory, retryCount]);
+  }, [
+    ids,
+    providerIds,
+    range,
+    requestKey,
+    dates,
+    loadedAt,
+    initialHistory,
+    retryCount,
+  ]);
   const currentResult = useMemo(
     () => resolveHistory(results, requestKey, ids, range),
     [results, requestKey, ids, range],

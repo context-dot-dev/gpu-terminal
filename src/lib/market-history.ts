@@ -1,6 +1,5 @@
 import { cacheLife } from "next/cache";
 import { database } from "./db";
-import { cachedSnapshot } from "./snapshot";
 import type { MarketHistory, Snapshot } from "./types";
 import { readFilters } from "./market-filters";
 import {
@@ -20,10 +19,11 @@ export const historyWindows = {
 
 export async function cachedMarketHistory(
   ids: string[],
+  providerIds: string[],
   range: string,
   start: string,
   end: string,
-): Promise<MarketHistory | null> {
+): Promise<MarketHistory> {
   "use cache";
   cacheLife({ stale: 300, revalidate: 3600, expire: 86400 });
   const now = Date.now();
@@ -40,10 +40,6 @@ export async function cachedMarketHistory(
   const until = new Date(
     range === "custom" ? Math.min(now, Date.parse(end) + 86400000) : now,
   ).toISOString();
-  const snapshot = await cachedSnapshot();
-  const current = snapshot.providers.flatMap((p) => p.rates);
-  const offers = ids.map((id) => current.find((r) => r.id === id));
-  if (offers.some((offer) => !offer)) return null;
   const rows = await database().query(
     `WITH points AS (
         SELECT r->>'id' AS id, o.observed_at AS at, r->>'hourly' AS hourly,
@@ -53,19 +49,18 @@ export async function cachedMarketHistory(
         WHERE o.provider_id = ANY($1::text[]) AND o.observed_at >= $2::timestamptz
           AND o.observed_at < $4::timestamptz AND r->>'id' = ANY($3::text[])
       ) SELECT id, at, hourly, currency FROM points WHERE position <= 2001 ORDER BY at`,
-    [[...new Set(offers.map((offer) => offer!.providerId))], since, ids, until],
+    [providerIds, since, ids, until],
     { fetchOptions: { signal: AbortSignal.timeout(15000) } },
   );
   return {
     window: { start: since, end: until },
-    series: offers.map((offer) => ({
-      id: offer!.id,
-      truncated: rows.filter((row) => row.id === offer!.id).length > 2000,
+    series: ids.map((id) => ({
+      id,
+      truncated: rows.filter((row) => row.id === id).length > 2000,
       points: rows
         .filter(
           (row) =>
-            row.id === offer!.id &&
-            row.currency === offer!.currency &&
+            row.id === id &&
             Number.isFinite(Number(row.hourly)) &&
             Number(row.hourly) > 0,
         )
@@ -97,13 +92,12 @@ export async function initialMarketHistory(
   const offers = providerHistoryOffers(rates);
   if (!offers.length) return undefined;
   try {
-    return (
-      (await cachedMarketHistory(
-        offers.map((r) => r.id).sort(),
-        "7d",
-        "",
-        "",
-      )) ?? undefined
+    return await cachedMarketHistory(
+      offers.map((r) => r.id).sort(),
+      [...new Set(offers.map((r) => r.providerId))].sort(),
+      "7d",
+      "",
+      "",
     );
   } catch {
     return undefined;
