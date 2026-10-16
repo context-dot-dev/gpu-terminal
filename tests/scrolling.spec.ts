@@ -61,8 +61,9 @@ for (const viewport of [
   });
 }
 
-test("mobile table keeps horizontal scrolling while vertical swipes move the page", async ({ browser }) => {
+test("mobile table keeps horizontal scrolling while vertical swipes move the page", async ({ browser }, info) => {
   const context = await browser.newContext({
+    extraHTTPHeaders: info.project.use.extraHTTPHeaders,
     viewport: { width: 390, height: 844 },
     isMobile: true,
     hasTouch: true,
