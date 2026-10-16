@@ -33,7 +33,7 @@ test("Runcrate's public price feed reaches the dashboard and history", async ({
   await page.getByRole("textbox", { name: "Find a provider" }).fill("Runcrate");
   const coverage = page.getByRole("region", { name: "Provider coverage table" });
   await expect(coverage).toContainText("Rates collected");
-  await expect(coverage).toContainText("Target: every 15m");
+  await expect(coverage).toContainText("Target: every 30m");
   await expect(coverage).toContainText(`${provider!.rates.length} live rates`);
   await info.attach("runcrate-collection.json", {
     body: JSON.stringify(
