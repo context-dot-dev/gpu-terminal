@@ -18,6 +18,7 @@ export function ProviderHistoryLines({
   domain,
   currency,
   selected,
+  focusedId,
   onSelect,
   onClear,
   onOpen,
@@ -29,6 +30,7 @@ export function ProviderHistoryLines({
   currency: string;
   status: "loading" | "unavailable" | "ready";
   selected: string[];
+  focusedId: string;
   onSelect: (id: string) => void;
   onClear: () => void;
   onOpen: (offer: Rate) => void;
@@ -61,7 +63,11 @@ export function ProviderHistoryLines({
         s.points.some((point) => point.hourly !== s.points[0].hourly),
     }));
     const displayed = prepared.filter(
-      (s) => !hideUnchanged || s.changed || selected.includes(s.offer.id),
+      (s) =>
+        !hideUnchanged ||
+        s.changed ||
+        selected.includes(s.offer.id) ||
+        s.offer.id === focusedId,
     );
     const scaleSeries = displayed.some((s) => s.points.length)
       ? displayed
@@ -103,7 +109,7 @@ export function ProviderHistoryLines({
       ),
       lines,
     };
-  }, [series, domain, hideUnchanged, selected]);
+  }, [series, domain, hideUnchanged, selected, focusedId]);
   const hasObservations = lines.some((s) => s.points.length);
   const changedCount = lines.filter((s) => s.changed).length;
   const unchangedCount = lines.filter(
@@ -111,12 +117,17 @@ export function ProviderHistoryLines({
   ).length;
   const unknownCount = lines.length - changedCount - unchangedCount;
   const plottedLines = lines.filter(
-    (s) => !hideUnchanged || s.changed || selected.includes(s.offer.id),
+    (s) =>
+      !hideUnchanged ||
+      s.changed ||
+      selected.includes(s.offer.id) ||
+      s.offer.id === focusedId,
   );
   const legendLines = lines.filter((s) =>
     selected.length ? selected.includes(s.offer.id) : s.changed,
   );
-  const focusedId = plottedLines.some((s) => s.offer.id === hovered)
+  const activeLine = plottedLines.find((s) => s.offer.id === focusedId);
+  const hoveredId = plottedLines.some((s) => s.offer.id === hovered)
     ? hovered
     : null;
   const visibleObservation =
@@ -145,14 +156,12 @@ export function ProviderHistoryLines({
       }
       return a.offer.hourly - b.offer.hourly || a.name.localeCompare(b.name);
     });
-  const emphasis = (line: (typeof lines)[number]) =>
-    focusedId === line.offer.id
-      ? 3
-      : selected.includes(line.offer.id)
-        ? 2
-        : line.changed
-          ? 1
-          : 0;
+  const emphasis = (line: (typeof lines)[number]) => {
+    if (hoveredId === line.offer.id) return 4;
+    if (activeLine?.offer.id === line.offer.id) return 3;
+    if (selected.includes(line.offer.id)) return 2;
+    return line.changed ? 1 : 0;
+  };
   const orderedLines = [...plottedLines].sort(
     (a, b) => emphasis(a) - emphasis(b),
   );
@@ -281,8 +290,17 @@ export function ProviderHistoryLines({
       </div>
       <div className="provider-chart-layout">
         <div className="min-w-0">
-          <div className="mb-2 flex justify-between gap-2 text-xs text-muted-foreground">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
             <span>{currency}/GPU/hour</span>
+            {activeLine && (
+              <span
+                className="flex min-w-0 items-center gap-1.5 text-foreground"
+                aria-label={`Selected provider ${activeLine.name}`}
+              >
+                <ProviderLogo providerId={activeLine.offer.providerId} />
+                <span className="truncate">{activeLine.name} selected</span>
+              </span>
+            )}
             <span>{plottedLines.length} providers · one price scale</span>
           </div>
           <div
@@ -310,7 +328,7 @@ export function ProviderHistoryLines({
               role="img"
               aria-label={
                 hasObservations
-                  ? `${hideUnchanged ? "Changed and pinned" : "All"} provider price histories, ${money(0)} to ${money(maximum)} per GPU hour`
+                  ? `${hideUnchanged ? "Changed, pinned and selected" : "All"} provider price histories, ${money(0)} to ${money(maximum)} per GPU hour`
                   : emptyLabel
               }
             >
@@ -326,24 +344,32 @@ export function ProviderHistoryLines({
                 />
               ))}
               {orderedLines.map((s) => {
-                const emphasized = focusedId
-                  ? focusedId === s.offer.id
-                  : selected.includes(s.offer.id);
+                const hoveredLine = hoveredId === s.offer.id;
+                const focusedLine = activeLine?.offer.id === s.offer.id;
+                const pinnedLine = selected.includes(s.offer.id);
+                const emphasized = hoveredId
+                  ? hoveredLine
+                  : focusedLine || pinnedLine;
+                let opacity = s.changed ? 0.95 : changedCount ? 0.24 : 0.55;
+                if (selected.length) opacity = pinnedLine ? 1 : 0.12;
+                if (activeLine)
+                  opacity = focusedLine || pinnedLine ? 1 : s.changed ? 0.45 : 0.2;
+                if (hoveredId) opacity = hoveredLine ? 1 : 0.12;
                 const common = {
                   stroke: s.color,
-                  strokeWidth: emphasized ? 2.5 : s.changed ? 1.8 : 1,
-                  opacity: emphasized
-                    ? 1
-                    : focusedId || selected.length
-                      ? 0.12
-                      : s.changed
-                        ? 0.95
-                        : changedCount
-                          ? 0.24
-                          : 0.55,
+                  strokeWidth:
+                    hoveredLine || focusedLine
+                      ? 3
+                      : pinnedLine
+                        ? 2.5
+                        : s.changed
+                          ? 1.8
+                          : 1,
+                  opacity,
                   vectorEffect: "non-scaling-stroke" as const,
                   "data-provider-id": s.offer.providerId,
                   "data-emphasized": emphasized,
+                  "data-focused": focusedLine,
                   "data-changed": s.changed,
                 };
                 return s.points.length ? (
@@ -499,8 +525,9 @@ export function ProviderHistoryLines({
             {visibleLines.map((s) => (
               <div
                 key={s.offer.id}
-                className="provider-history-row"
+                className="provider-history-row data-[focused=true]:bg-accent/50"
                 data-testid="provider-history-row"
+                data-focused={activeLine?.offer.id === s.offer.id}
                 onMouseEnter={() => setHovered(s.offer.id)}
                 onMouseLeave={() => setHovered(null)}
                 onFocus={() => setHovered(s.offer.id)}
