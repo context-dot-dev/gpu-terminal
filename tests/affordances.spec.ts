@@ -67,6 +67,7 @@ test("controls give hover feedback and coverage uses native provider links", asy
   const before = await refresh.evaluate(
     (el) => getComputedStyle(el).backgroundColor,
   );
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
   const bounds = await refresh.boundingBox();
   await refresh.hover();
   await expect

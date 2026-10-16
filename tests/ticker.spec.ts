@@ -18,6 +18,7 @@ test("GPU ticker moves left, loops, pauses and keeps navigation usable", async (
   await expect.poll(x).toBeLessThan(before - 3);
   await ticker.hover();
   await expect(track).toHaveCSS("animation-play-state", "paused");
+  await track.evaluate((element) => Promise.all(element.getAnimations().map((animation) => animation.ready)).then(() => undefined));
   const stopped = await x();
   await page.waitForTimeout(200);
   expect(await x()).toBeCloseTo(stopped, 0);
