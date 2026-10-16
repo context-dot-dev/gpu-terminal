@@ -33,6 +33,8 @@ export const rateSortFields = [
   { key: "gpu", label: "GPU", numeric: false },
   { key: "provider", label: "Provider", numeric: false },
   { key: "memory", label: "Memory", numeric: true },
+  { key: "vcpus", label: "vCPUs", numeric: true },
+  { key: "ram", label: "Host RAM", numeric: true },
   { key: "count", label: "Required GPUs", numeric: true },
   { key: "billing", label: "Billing", numeric: false },
   { key: "plan", label: "Plan", numeric: false },
@@ -63,6 +65,10 @@ export function compareRates(a: Rate, b: Rate, sort: SortState<RateSortKey>) {
         return names.get(r.providerId) ?? r.providerId;
       case "memory":
         return r.vramGb;
+      case "vcpus":
+        return r.vcpus ?? null;
+      case "ram":
+        return r.ramGb ?? null;
       case "count":
         return r.gpuCount;
       case "billing":

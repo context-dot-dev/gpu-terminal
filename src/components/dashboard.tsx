@@ -181,7 +181,9 @@ const coverageLabels: Record<string, string> = {
 type CoverageSortKey = "name" | "status" | "rates" | "checked" | "message";
 const comparisonFields: { key: RateSortKey; label: string }[] = [
   { key: "gpu", label: "GPU" },
-  { key: "memory", label: "Memory" },
+  { key: "memory", label: "GPU VRAM" },
+  { key: "vcpus", label: "vCPUs" },
+  { key: "ram", label: "Host RAM" },
   { key: "billing", label: "Billing" },
   { key: "price", label: "Per GPU /hr" },
   { key: "count", label: "Required GPUs" },
@@ -1421,7 +1423,7 @@ function MarketDashboard({
                                   {offerSortButton("Provider", "provider")}
                                 </TableHead>
                                 <TableHead aria-sort={sortAria(sort, "memory")}>
-                                  {offerSortButton("Memory", "memory")}
+                                  {offerSortButton("GPU VRAM", "memory")}
                                 </TableHead>
                                 <TableHead
                                   aria-sort={sortAria(sort, "billing")}
@@ -1531,6 +1533,16 @@ function MarketDashboard({
                                           ? `${r.vramGb} GB`
                                           : "Unknown"}
                                       </span>
+                                      {(r.vcpus || r.ramGb) && (
+                                        <div className="mt-1 text-xs text-muted-foreground">
+                                          {[
+                                            r.vcpus && `${r.vcpus} vCPUs`,
+                                            r.ramGb && `${r.ramGb} GB RAM`,
+                                          ]
+                                            .filter(Boolean)
+                                            .join(" · ")}
+                                        </div>
+                                      )}
                                       <div className="mt-1 text-xs text-muted-foreground">
                                         {r.gpuCount
                                           ? `${r.gpuCount} GPU${r.gpuCount > 1 ? "s" : ""} required`
@@ -1965,11 +1977,17 @@ function MarketDashboard({
                       <dd>
                         {money(detail.amount, detail.currency)} /{detail.unit}
                       </dd>
-                      <dt className="text-muted-foreground">Memory per GPU</dt>
+                      <dt className="text-muted-foreground">GPU VRAM per GPU</dt>
                       <dd>
                         {detail.vramGb
                           ? `${detail.vramGb} GB`
                           : "Not specified"}
+                      </dd>
+                      <dt className="text-muted-foreground">vCPUs</dt>
+                      <dd>{detail.vcpus ?? "Not specified"}</dd>
+                      <dt className="text-muted-foreground">Host RAM</dt>
+                      <dd>
+                        {detail.ramGb ? `${detail.ramGb} GB` : "Not specified"}
                       </dd>
                       <dt className="text-muted-foreground">
                         Minimum GPU count
@@ -2158,6 +2176,8 @@ function MarketDashboard({
                           [
                             hardwareLabel(r),
                             r.vramGb ? `${r.vramGb} GB` : "Unknown",
+                            r.vcpus ?? "Unknown",
+                            r.ramGb ? `${r.ramGb} GB` : "Unknown",
                             `${r.billing} · ${offerCharacteristics(r).supply === "Community" ? "Community · " : ""}${offerCharacteristics(r).priority !== "Not specified" ? `${offerCharacteristics(r).priority} priority` : r.plan}`,
                             money(r.hourly, r.currency),
                             r.gpuCount ?? "Unknown",
