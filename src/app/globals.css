@@ -565,6 +565,7 @@ body {
 
 .terminal-masthead {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 24px;
   padding: 24px 28px;
@@ -629,8 +630,9 @@ body {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
-.mobile-attribution {
-  display: none;
+.masthead-attribution {
+  margin-left: auto;
+  flex: none;
 }
 .masthead-search {
   width: 152px;
@@ -733,8 +735,9 @@ body {
   .masthead-actions button {
     padding-inline: 6px;
   }
-  .mobile-attribution {
-    display: inline-flex;
+  .masthead-attribution {
+    order: -1;
+    margin-left: 0;
     width: 100%;
   }
   .market-utilities {

@@ -25,6 +25,7 @@ for (const viewport of [
     await expect(brand).toContainText("gpu-terminal");
     await expect(brand).toHaveCSS("font-family", /Georgia/);
     const projectLinks = page.getByRole("navigation", { name: "Project links" });
+    await expect(header.getByRole("navigation", { name: "Project links" })).toHaveCount(1);
     const visibleLinks = projectLinks.filter({ visible: true });
     await expect(visibleLinks).toHaveCount(1);
     await expect(visibleLinks.getByRole("link", { name: "Powered by Context.dev" }))
@@ -38,6 +39,7 @@ for (const viewport of [
       header.getByRole("button", { name: /Search GPUs, providers/ }),
       header.getByRole("tablist"),
       header.getByRole("button", { name: "Methodology" }),
+      visibleLinks,
     ];
     const boxes = [];
     for (const element of elements) {
