@@ -3,6 +3,7 @@ import type { Snapshot } from "../src/lib/types";
 
 test("Runcrate's public price feed reaches the dashboard and history", async ({
   request,
+  page,
 }, info) => {
   const response = await request.get("/api/prices");
   expect(response.ok()).toBeTruthy();
@@ -28,6 +29,12 @@ test("Runcrate's public price feed reaches the dashboard and history", async ({
   const points = (await history.json()).points;
   expect(points.some((point: { hourly: number }) => point.hourly === h200!.hourly))
     .toBeTruthy();
+  await page.goto("/?tab=coverage");
+  await page.getByRole("textbox", { name: "Find a provider" }).fill("Runcrate");
+  const coverage = page.getByRole("region", { name: "Provider coverage table" });
+  await expect(coverage).toContainText("Rates collected");
+  await expect(coverage).toContainText("Target: every 15m");
+  await expect(coverage).toContainText(`${provider!.rates.length} live rates`);
   await info.attach("runcrate-collection.json", {
     body: JSON.stringify(
       {
@@ -40,5 +47,9 @@ test("Runcrate's public price feed reaches the dashboard and history", async ({
       2,
     ),
     contentType: "application/json",
+  });
+  await info.attach("runcrate-coverage.png", {
+    body: await page.screenshot(),
+    contentType: "image/png",
   });
 });
