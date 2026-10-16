@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@databuddy/sdk": "^3.2.1",
     "@neondatabase/serverless": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
