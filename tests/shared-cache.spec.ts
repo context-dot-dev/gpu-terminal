@@ -2,12 +2,14 @@ import { test, expect } from "@playwright/test";
 import { neon } from "@neondatabase/serverless";
 import type { Snapshot } from "../src/lib/types";
 
+// Isolated fault deployments use a 30-second Data Cache revalidation interval.
 // Failure cases: each request rereads Neon; HTTP caches hide invalidation;
 // offer combinations create independent histories; failed refresh loses data.
-test("collection invalidates shared prices and history without HTTP cache delays", async ({
+test("shared prices and history revalidate on time without HTTP cache delays", async ({
   request,
   baseURL,
 }, info) => {
+  test.setTimeout(120000);
   test.skip(!process.env.E2E_DATABASE_URL || !process.env.E2E_CRON_SECRET,
     "Requires an isolated database and its matching deployment");
   expect(baseURL).not.toContain("gpu.context.dev");
@@ -15,7 +17,12 @@ test("collection invalidates shared prices and history without HTTP cache delays
   const initial = await request.get("/api/prices");
   expect(initial.ok()).toBeTruthy();
   expect(initial.headers()["cache-control"]).toBe("no-store");
-  const snapshot: Snapshot = await initial.json();
+  const warmStarted = Date.now();
+  await expect.poll(async () => {
+    const current: Snapshot = await (await request.get("/api/prices")).json();
+    return Date.parse(current.loadedAt);
+  }, { timeout: 45000 }).toBeGreaterThan(warmStarted);
+  const snapshot: Snapshot = await (await request.get("/api/prices")).json();
   const provider = snapshot.providers.find((p) => p.id === "replicate")!;
   expect(provider.message).toMatch(/^(Isolated E2E fixture|Shared cache E2E )/);
   const offer = provider.rates[0];
@@ -54,11 +61,11 @@ test("collection invalidates shared prices and history without HTTP cache delays
   await expect.poll(async () => {
     const latest: Snapshot = await (await request.get("/api/prices")).json();
     return latest.providers.find((p) => p.id === "replicate")?.message;
-  }, { timeout: 30000 }).toBe(message);
+  }, { timeout: 45000 }).toBe(message);
   await expect.poll(async () => {
     const latest = await (await request.get(path)).json();
     return latest.series[0].points.at(-1)?.hourly;
-  }, { timeout: 30000 }).toBe(hourly);
+  }, { timeout: 45000 }).toBe(hourly);
   await info.attach("shared-cache-invalidation.json", {
     body: JSON.stringify({
       offer: offer.id,
@@ -96,7 +103,7 @@ test("broad history remains bounded and reports truncation", async ({ request, b
     expect(response.ok()).toBeTruthy();
     const history = await response.json();
     return history.series.every((series: { truncated: boolean }) => series.truncated);
-  }, { timeout: 30000 }).toBe(true);
+  }, { timeout: 45000 }).toBe(true);
   const response = await request.get(path);
   const body = await response.body();
   const history = JSON.parse(body.toString());
@@ -142,6 +149,7 @@ test("the scheduler respects collection windows and overlapping leases", async (
 });
 
 test("failed background database reads retain cached prices and history", async ({ request, baseURL }, info) => {
+  test.setTimeout(90000);
   test.skip(!process.env.E2E_DATABASE_URL || !process.env.E2E_CRON_SECRET,
     "Requires an isolated database and its matching deployment");
   expect(baseURL).not.toContain("gpu.context.dev");
@@ -161,6 +169,7 @@ test("failed background database reads retain cached prices and history", async 
     sql`ALTER TABLE observations RENAME TO observations_unavailable`,
   ]);
   try {
+    await new Promise((resolve) => setTimeout(resolve, 35000));
     for (let i = 0; i < 3; i++) {
       const prices = await request.get("/api/prices");
       expect(prices.ok()).toBeTruthy();

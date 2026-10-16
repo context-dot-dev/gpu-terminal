@@ -10,7 +10,7 @@ export function database() {
   return neon(process.env.DATABASE_URL);
 }
 
-export function marketCacheTag() {
+export function databaseCacheKey() {
   const url = new URL(process.env.DATABASE_URL!);
   const identity = `${url.hostname}${url.pathname}:${url.username}`;
   return `gpu-market:${createHash("sha256").update(identity).digest("hex").slice(0, 16)}`;
@@ -48,7 +48,7 @@ export function unavailableSnapshot(): Snapshot {
   };
 }
 
-async function cachedProviderBatch(ids: string[], tag: string) {
+async function cachedProviderBatch(ids: string[], databaseKey: string) {
   return unstable_cache(
     async () => {
       const rows = await database().query(
@@ -58,8 +58,8 @@ async function cachedProviderBatch(ids: string[], tag: string) {
       );
       return { rows, loadedAt: new Date().toISOString() };
     },
-    ["provider-batch", tag, ...ids],
-    { tags: [tag], revalidate: 1800 },
+    ["provider-batch", databaseKey, ...ids],
+    { revalidate: 900 },
   )();
 }
 
@@ -73,9 +73,9 @@ export async function getSnapshot(): Promise<Snapshot> {
       (_, i) =>
         collectibleProviders.slice(i * 25, i * 25 + 25).map((p) => p.id),
     );
-    const tag = marketCacheTag();
+    const databaseKey = databaseCacheKey();
     const batches = await Promise.all(
-      groups.map((ids) => cachedProviderBatch(ids, tag)),
+      groups.map((ids) => cachedProviderBatch(ids, databaseKey)),
     );
     const rows = new Map(
       batches

@@ -1,5 +1,5 @@
-import { cacheLife, cacheTag, unstable_cache } from "next/cache";
-import { database, getSnapshot, marketCacheTag } from "./db";
+import { cacheLife, unstable_cache } from "next/cache";
+import { database, getSnapshot, databaseCacheKey } from "./db";
 import type { MarketHistory, Snapshot } from "./types";
 import { readFilters } from "./market-filters";
 import {
@@ -22,7 +22,7 @@ async function cachedOfferHistory(
   provider: string,
   start: string,
   end: string,
-  tag: string,
+  databaseKey: string,
 ) {
   return unstable_cache(
     async () => {
@@ -58,8 +58,8 @@ async function cachedOfferHistory(
           })),
       };
     },
-    ["offer-history", tag, id, provider, start, end],
-    { tags: [tag], revalidate: 1800 },
+    ["offer-history", databaseKey, id, provider, start, end],
+    { revalidate: 900 },
   )();
 }
 
@@ -71,8 +71,7 @@ export async function cachedMarketHistory(
   end: string,
 ): Promise<MarketHistory> {
   "use cache";
-  cacheTag(marketCacheTag());
-  cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
+  cacheLife({ stale: 300, revalidate: 900, expire: 86400 });
   return getMarketHistory(ids, providerIds, range, start, end);
 }
 
@@ -98,7 +97,7 @@ export async function getMarketHistory(
     range === "custom" ? Math.min(now, Date.parse(end) + 86400000) : now,
   ).toISOString();
   const histories: Awaited<ReturnType<typeof cachedOfferHistory>>[] = [];
-  const tag = marketCacheTag();
+  const databaseKey = databaseCacheKey();
   const snapshot = await getSnapshot();
   const offerProviders = new Map(
     snapshot.providers.flatMap((p) =>
@@ -120,7 +119,7 @@ export async function getMarketHistory(
               offerProviders.get(id) ?? "",
               range === "custom" ? start : "",
               range === "custom" ? end : "",
-              tag,
+              databaseKey,
             ),
           ),
       )),
