@@ -240,3 +240,40 @@ test("truncated history cannot stand in for a complete shorter interval", async 
     card.getByRole("alert").getByText("History unavailable", { exact: true }),
   ).toBeVisible();
 });
+
+test("history recovers from a transient request and can be retried after a persistent failure", async ({ page }, info) => {
+  await setup(page);
+  let attempts24h = 0;
+  let fail30d = true;
+  await page.route("**/api/market-history?*", (route) => {
+    const params = new URL(route.request().url()).searchParams;
+    if (params.get("ids") === rates[0].id && params.get("range") === "24h" && attempts24h++ === 0)
+      return route.fulfill({ status: 503, json: { error: "Temporary outage" } });
+    if (params.get("range") === "30d" && fail30d)
+      return route.fulfill({ status: 503, json: { error: "Temporary outage" } });
+    return route.fulfill({ json: history(params.get("ids")!) });
+  });
+  await page.goto("/?family=H100");
+  const card = page.locator('[aria-label="GPU price monitoring"]');
+  await card.getByRole("button", { name: "Selected offer", exact: true }).click();
+  await card.getByRole("button", { name: "Last 24 hours" }).click();
+  await expect(card).toContainText("1 stored observations");
+  expect(attempts24h).toBe(2);
+  await expect(card.getByRole("alert")).toHaveCount(0);
+
+  await card.getByRole("button", { name: "Last 30 days" }).click();
+  await expect(card.getByRole("alert")).toContainText("History unavailable");
+  await expect(card.getByRole("button", { name: "Retry history" })).toBeVisible();
+  await info.attach("history-retry-available.png", {
+    body: await page.screenshot(),
+    contentType: "image/png",
+  });
+  fail30d = false;
+  await card.getByRole("button", { name: "Retry history" }).click();
+  await expect(card).toContainText("1 stored observations");
+  await expect(card.getByRole("alert")).toHaveCount(0);
+  await info.attach("history-recovered.png", {
+    body: await page.screenshot(),
+    contentType: "image/png",
+  });
+});

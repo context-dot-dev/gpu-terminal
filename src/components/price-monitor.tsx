@@ -67,20 +67,41 @@ const historyWindowDays: Record<string, number> = {
 const selectedControl =
   "[&_[aria-pressed=true]]:bg-foreground [&_[aria-pressed=true]]:text-background";
 const pendingHistory = new Map<string, Promise<History>>();
+const retryDelay = () => new Promise((resolve) => setTimeout(resolve, 750));
 function loadHistory(query: string): Promise<History> {
   const pending = pendingHistory.get(query);
   if (pending) return pending;
-  const request = fetch(`/api/market-history?${query}`, {
-    signal: AbortSignal.timeout(40_000),
-  })
-    .then(async (response) => {
-      if (!response.ok)
-        throw new Error("Price history is temporarily unavailable.");
-      const data: History = await response.json();
-      if (!Array.isArray(data.series))
-        throw new Error("Price history returned an invalid response.");
-      return data;
-    })
+  const request = (async () => {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const response = await fetch(`/api/market-history?${query}`, {
+          signal: AbortSignal.timeout(40_000),
+        });
+        if (!response.ok) {
+          if (attempt === 0 && response.status >= 500) {
+            await retryDelay();
+            continue;
+          }
+          throw new Error("Price history is temporarily unavailable.");
+        }
+        const data: History = await response.json();
+        if (!Array.isArray(data.series))
+          throw new Error("Price history returned an invalid response.");
+        return data;
+      } catch (error) {
+        if (
+          attempt === 0 &&
+          (error instanceof TypeError ||
+            (error instanceof DOMException && error.name === "TimeoutError"))
+        ) {
+          await retryDelay();
+          continue;
+        }
+        throw error;
+      }
+    }
+    throw new Error("Price history is temporarily unavailable.");
+  })()
     .finally(() => pendingHistory.delete(query));
   pendingHistory.set(query, request);
   return request;
@@ -172,6 +193,7 @@ export function PriceMonitor({
         }
       : {},
   );
+  const [retryCount, setRetryCount] = useState(0);
   const candidates = useMemo(
     () =>
       rates
@@ -259,6 +281,14 @@ export function PriceMonitor({
     .sort()
     .join(",");
   const requestKey = `${ids}:${range}:${dates.start}:${dates.end}`;
+  const retryHistory = () => {
+    setResults((previous) => {
+      const next = { ...previous };
+      delete next[requestKey];
+      return next;
+    });
+    setRetryCount((count) => count + 1);
+  };
   useEffect(() => {
     if (!ids) return;
     if (
@@ -306,7 +336,7 @@ export function PriceMonitor({
     return () => {
       active = false;
     };
-  }, [ids, range, requestKey, dates, loadedAt, initialHistory]);
+  }, [ids, range, requestKey, dates, loadedAt, initialHistory, retryCount]);
   const currentResult = useMemo(
     () => resolveHistory(results, requestKey, ids, range),
     [results, requestKey, ids, range],
@@ -658,6 +688,9 @@ export function PriceMonitor({
                             {currentResult.error} Current prices remain
                             available.
                           </AlertDescription>
+                          <Button size="sm" variant="outline" className="mt-2" onClick={retryHistory}>
+                            Retry history
+                          </Button>
                         </Alert>
                       )}
                       <ProviderHistoryLines
@@ -715,6 +748,9 @@ export function PriceMonitor({
                       <AlertDescription>
                         {currentResult.error} Current prices remain available.
                       </AlertDescription>
+                      <Button size="sm" variant="outline" className="mt-2" onClick={retryHistory}>
+                        Retry history
+                      </Button>
                     </Alert>
                   ) : rows.length ? (
                     <EvilLineChart
