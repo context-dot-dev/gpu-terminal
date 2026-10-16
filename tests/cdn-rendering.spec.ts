@@ -1,5 +1,21 @@
 import { test, expect } from "@playwright/test";
 
+test("snapshot response is cacheable and the dashboard states its update cadence", async ({
+  page,
+  request,
+}, info) => {
+  const response = await request.get("/api/prices");
+  expect(response.ok()).toBeTruthy();
+  expect(response.headers()["cdn-cache-control"]).toContain("s-maxage=3600");
+  expect(response.headers()["cache-control"]).toContain("max-age=300");
+  await page.goto("/");
+  await expect(page.locator("footer")).toContainText("Auto-sync 5m · Prices update hourly");
+  await info.attach("snapshot-cache-policy.json", {
+    body: JSON.stringify({ status: response.status(), headers: response.headers() }, null, 2),
+    contentType: "application/json",
+  });
+});
+
 // Failure cases: CDN caches only a spinner; prices require streamed JavaScript;
 // shared URLs reuse another market's HTML; filter clicks refetch the whole page.
 test("root prices are visible with JavaScript disabled and no loading shell", async ({

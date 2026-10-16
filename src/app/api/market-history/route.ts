@@ -61,8 +61,8 @@ export async function GET(request: Request) {
       );
     return Response.json(history, {
       headers: {
-        "Cache-Control": "public, max-age=15, stale-while-revalidate=60",
-        "CDN-Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+        "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",
+        "CDN-Cache-Control": "public, s-maxage=3600, stale-while-revalidate=3600",
       },
     });
   } catch {
