@@ -11,7 +11,7 @@ test("Nebius B200 exposes GPU memory and published host resources", async ({ pag
   expect(b200.vcpus).toBe(20);
   expect(b200.ramGb).toBe(224);
 
-  await page.goto("/?family=B200&provider=nebius");
+  await page.goto("/?family=B200&provider=nebius&fresh=false");
   const row = page.getByTestId("price-row").filter({ hasText: "NVIDIA HGX B200" }).first();
   await expect(row).toBeVisible();
   await row.click();

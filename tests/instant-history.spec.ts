@@ -89,8 +89,8 @@ for (const path of ["/", "/?family=H200&provider=nebius&fresh=false"]) {
 test("provider history lines are included in the static HTML", async ({
   browser,
   baseURL,
-}) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+}, info) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, extraHTTPHeaders: info.project.use.extraHTTPHeaders });
   const page = await context.newPage();
   await page.goto(`${baseURL}/`);
   const chart = page.locator('[aria-label="GPU price monitoring"]');

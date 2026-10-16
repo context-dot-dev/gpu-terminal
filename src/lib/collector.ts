@@ -455,16 +455,17 @@ export async function collectProvider(provider: Provider) {
   }
 }
 
-export async function collectDue(limit = 12) {
+export async function collectDue() {
   const scheduledAt = Date.now();
-  const startDeadline = scheduledAt + 80000;
+  const startDeadline = scheduledAt + 560000;
   const rows =
-    await database()`SELECT provider_id, checked_at, status, message, parser_version FROM provider_state`;
+    await database()`SELECT provider_id, checked_at, status, parser_version,
+      jsonb_array_length(rates) AS rate_count FROM provider_state`;
   const interval = (provider: Provider) => {
     const row = rows.find((r) => r.provider_id === provider.id);
-    return row?.status === "error" && row.message?.includes("HTTP 429")
-      ? Math.min(provider.intervalMinutes, 5) * 60000
-      : provider.intervalMinutes * 60000;
+    return (row?.status === "no-rates" && row.rate_count === 0
+      ? 360
+      : provider.intervalMinutes) * 60000;
   };
   const due = providers
     .filter((p) => p.trackingScope === "gpu-hourly")
@@ -472,14 +473,16 @@ export async function collectDue(limit = 12) {
       const row = rows.find((r) => r.provider_id === p.id);
       return (
         !row?.checked_at ||
-        row.parser_version !== parserVersionFor(p) ||
-        scheduledAt - Date.parse(row.checked_at) > interval(p)
+        (row.parser_version !== parserVersionFor(p) &&
+          scheduledAt - Date.parse(row.checked_at) >= 30 * 60000) ||
+        scheduledAt - Date.parse(row.checked_at) >= interval(p) - 15 * 60000
       );
     })
     .sort((a, b) => {
-      const needsParserRefresh = (provider: Provider) =>
-        rows.find((row) => row.provider_id === provider.id)?.parser_version !==
-        parserVersionFor(provider);
+      const needsParserRefresh = (provider: Provider) => {
+        const row = rows.find((row) => row.provider_id === provider.id);
+        return row?.status !== "error" && row?.parser_version !== parserVersionFor(provider);
+      };
       if (needsParserRefresh(a) !== needsParserRefresh(b))
         return needsParserRefresh(a) ? -1 : 1;
       const time = (id: string) =>
@@ -491,17 +494,23 @@ export async function collectDue(limit = 12) {
       return (
         elapsedIntervals(b) - elapsedIntervals(a) || time(a.id) - time(b.id)
       );
-    })
-    .slice(0, Math.min(12, Math.max(0, Math.floor(limit))));
+    });
   const results: Awaited<ReturnType<typeof collectProvider>>[] = [];
   let nextBatchAt = 0;
-  for (let i = 0; i < due.length; i += 4) {
+  for (let i = 0; i < Math.min(due.length, 80); i += 4) {
     if (Date.now() >= startDeadline || nextBatchAt >= startDeadline) break;
     const wait = nextBatchAt - Date.now();
     if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
     if (Date.now() >= startDeadline) break;
     nextBatchAt = Date.now() + 30000;
-    const batch = await Promise.all(due.slice(i, i + 4).map(collectProvider));
+    const batch = await Promise.all(due.slice(i, i + 4).map((provider) =>
+      collectProvider(provider).catch(() => ({
+        id: provider.id,
+        status: "error" as const,
+        count: 0,
+        message: "Provider refresh could not access the data store",
+      })),
+    ));
     results.push(...batch);
     if (
       batch.some(
@@ -510,5 +519,9 @@ export async function collectDue(limit = 12) {
     )
       break;
   }
-  return results;
+  return {
+    results,
+    due: due.length,
+    remaining: due.length - results.filter((result) => result.status !== "busy").length,
+  };
 }

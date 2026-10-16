@@ -51,7 +51,7 @@ test("cached HTML shows prices while the background refresh is held", async ({
   });
 });
 
-test("public data is briefly browser cached and errors are never cached", async ({
+test("public data relies on shared server caching and errors are never HTTP cached", async ({
   request,
 }, info) => {
   const prices = await request.get("/api/prices");
@@ -68,8 +68,7 @@ test("public data is briefly browser cached and errors are never cached", async 
     const response = await request.get(path);
     expect(response.ok()).toBeTruthy();
     const cache = response.headers()["cache-control"];
-    expect(cache).toMatch(/(?:^|, )max-age=15(?:,|$)/);
-    expect(cache).toContain("stale-while-revalidate=");
+    expect(cache).toBe("no-store");
     headers[path] = cache;
   }
   const invalid = await request.get("/api/market-history?ids=invalid");
@@ -170,6 +169,7 @@ test("cached terminal renders actual prices before application hydration", async
   baseURL,
 }, info) => {
   const context = await browser.newContext({
+    extraHTTPHeaders: info.project.use.extraHTTPHeaders,
     viewport: { width: 1440, height: 1100 },
   });
   await context.route("**/_next/static/**/*.js", (route) => route.abort());

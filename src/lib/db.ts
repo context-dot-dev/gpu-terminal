@@ -1,4 +1,6 @@
+import { createHash } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
+import { unstable_cache } from "next/cache";
 import { publishableRates } from "./quality";
 import { providers } from "./catalog";
 import type { ProviderState, Rate, Snapshot } from "./types";
@@ -6,6 +8,12 @@ import type { ProviderState, Rate, Snapshot } from "./types";
 export function database() {
   if (!process.env.DATABASE_URL) throw new Error("Database is not configured");
   return neon(process.env.DATABASE_URL);
+}
+
+export function databaseCacheKey() {
+  const url = new URL(process.env.DATABASE_URL!);
+  const identity = `${url.hostname}${url.pathname}:${url.username}`;
+  return `gpu-market:${createHash("sha256").update(identity).digest("hex").slice(0, 16)}`;
 }
 
 let lastGoodSnapshot: Snapshot | undefined;
@@ -40,10 +48,23 @@ export function unavailableSnapshot(): Snapshot {
   };
 }
 
+async function cachedProviderBatch(ids: string[], databaseKey: string) {
+  return unstable_cache(
+    async () => {
+      const rows = await database().query(
+        "SELECT provider_id, checked_at, observed_at, status, message, rates FROM provider_state WHERE provider_id = ANY($1::text[])",
+        [ids],
+        { fetchOptions: { signal: AbortSignal.timeout(20000) } },
+      );
+      return { rows, loadedAt: new Date().toISOString() };
+    },
+    ["provider-batch", databaseKey, ...ids],
+    { revalidate: 900 },
+  )();
+}
+
 export async function getSnapshot(): Promise<Snapshot> {
   try {
-    const sql = database();
-    const signal = AbortSignal.timeout(20000);
     const collectibleProviders = providers.filter(
       (provider) => provider.trackingScope === "gpu-hourly",
     );
@@ -52,18 +73,17 @@ export async function getSnapshot(): Promise<Snapshot> {
       (_, i) =>
         collectibleProviders.slice(i * 25, i * 25 + 25).map((p) => p.id),
     );
+    const databaseKey = databaseCacheKey();
     const batches = await Promise.all(
-      groups.map((ids) =>
-        sql.query(
-          "SELECT provider_id, checked_at, observed_at, status, message, rates FROM provider_state WHERE provider_id = ANY($1::text[])",
-          [ids],
-          { fetchOptions: { signal } },
-        ),
-      ),
+      groups.map((ids) => cachedProviderBatch(ids, databaseKey)),
     );
-    const rows = new Map(batches.flat().map((row) => [row.provider_id, row]));
+    const rows = new Map(
+      batches
+        .flatMap((batch) => batch.rows)
+        .map((row) => [row.provider_id, row]),
+    );
     const snapshot: Snapshot = {
-      loadedAt: new Date().toISOString(),
+      loadedAt: batches.map((batch) => batch.loadedAt).sort()[0],
       providers: providers.map((p) => {
         if (p.trackingScope === "inference-api")
           return {

@@ -44,6 +44,7 @@ test("shared filters are rendered correctly before hydration without a default-H
   baseURL,
 }, info) => {
   const context = await browser.newContext({
+    extraHTTPHeaders: info.project.use.extraHTTPHeaders,
     viewport: { width: 1440, height: 1100 },
   });
   await context.route("**/_next/static/**/*.js", (route) => route.abort());

@@ -62,7 +62,7 @@ test("Coverage deep links render filtered content before JavaScript and tabs hav
   browser,
   baseURL,
 }, info) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({ javaScriptEnabled: false, extraHTTPHeaders: info.project.use.extraHTTPHeaders });
   const page = await context.newPage();
   await page.goto(
     `${baseURL}/?tab=coverage&coverageQuery=Runpod&coverageStatus=ok`,

@@ -427,7 +427,7 @@ function MarketDashboard({
       if (document.visibilityState === "visible") void refresh();
     };
     const initialSync = setTimeout(sync, 0);
-    const timer = setInterval(sync, 300000);
+    const timer = setInterval(sync, 600000);
     document.addEventListener("visibilitychange", sync);
     window.addEventListener("online", sync);
     return () => {
@@ -1876,7 +1876,9 @@ function MarketDashboard({
                                 <div className="text-xs text-muted-foreground">
                                   {p.trackingScope === "inference-api"
                                     ? "Directory entry"
-                                    : `Target: every ${p.intervalMinutes / 60}h`}
+                                    : row.status === "no-rates" && !row.rates
+                                      ? "Target: every 6h"
+                                      : `Target: every ${p.intervalMinutes < 60 ? `${p.intervalMinutes}m` : `${p.intervalMinutes / 60}h`}`}
                                 </div>
                               )}
                             </TableCell>
@@ -1897,7 +1899,7 @@ function MarketDashboard({
         </div>
         <footer className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-muted-foreground">
           <span>
-            Source checks run on schedule · Auto-sync 5m · Prices update hourly · Snapshot{" "}
+            Collection every 30m · Auto-sync 10m · Snapshot{" "}
             {mounted
               ? ago(snapshot.loadedAt, now)
               : snapshot.loadedAt.replace("T", " ").slice(0, 19) + " UTC"}

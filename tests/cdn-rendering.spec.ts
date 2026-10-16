@@ -1,15 +1,14 @@
 import { test, expect } from "@playwright/test";
 
-test("snapshot response is cacheable and the dashboard states its update cadence", async ({
+test("snapshot uses shared caching and the dashboard states its update cadence", async ({
   page,
   request,
 }, info) => {
   const response = await request.get("/api/prices");
   expect(response.ok()).toBeTruthy();
-  expect(response.headers()["cdn-cache-control"]).toContain("s-maxage=3600");
-  expect(response.headers()["cache-control"]).toContain("max-age=300");
+  expect(response.headers()["cache-control"]).toBe("no-store");
   await page.goto("/");
-  await expect(page.locator("footer")).toContainText("Auto-sync 5m · Prices update hourly");
+  await expect(page.locator("footer")).toContainText("Collection every 30m · Auto-sync 10m");
   await info.attach("snapshot-cache-policy.json", {
     body: JSON.stringify({ status: response.status(), headers: response.headers() }, null, 2),
     contentType: "application/json",
@@ -23,6 +22,7 @@ test("root prices are visible with JavaScript disabled and no loading shell", as
   baseURL,
 }, info) => {
   const context = await browser.newContext({
+    extraHTTPHeaders: info.project.use.extraHTTPHeaders,
     javaScriptEnabled: false,
     viewport: { width: 1440, height: 1100 },
   });
@@ -73,7 +73,10 @@ test("shared filters produce isolated static HTML and repeat CDN hits", async ({
     expect(response.ok()).toBeTruthy();
     expect(html).not.toContain("Loading your market");
     if (baseURL?.includes("vercel.app"))
-      expect(response.headers()["x-vercel-cache"]).toMatch(/HIT|STALE/);
+      await expect.poll(async () =>
+        (await request.get(path)).headers()["x-vercel-cache"],
+        { timeout: 15000 },
+      ).toMatch(/HIT|STALE/);
     measurements.push({
       path,
       elapsedMs: performance.now() - start,
@@ -81,7 +84,10 @@ test("shared filters produce isolated static HTML and repeat CDN hits", async ({
       headers: response.headers(),
     });
   }
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    extraHTTPHeaders: info.project.use.extraHTTPHeaders,
+  });
   const page = await context.newPage();
   await page.goto(`${baseURL}${paths[2]}`);
   await expect(page.getByTestId("price-row").first()).toBeVisible();
@@ -130,4 +136,20 @@ test("encoded tracking parameters do not reset table pagination", async ({
   await expect(page.getByTestId("price-row").first()).toBeVisible();
   await page.getByRole("button", { name: "Next page", exact: true }).click();
   await expect(page.getByText(/^26–50 of /)).toBeVisible();
+});
+
+test("filtered coverage hydrates without repeated document navigation", async ({ page }, info) => {
+  const navigations: string[] = [];
+  page.on("request", (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) navigations.push(request.url());
+  });
+  await page.goto("/?tab=coverage");
+  await expect(page.getByRole("heading", { name: "Provider coverage", exact: true })).toBeVisible();
+  await page.getByLabel("Find a provider", { exact: true }).fill("Nebius");
+  await expect(page.getByRole("region", { name: "Provider coverage table" })).toContainText("Nebius");
+  expect(navigations).toHaveLength(1);
+  await info.attach("filtered-navigation.json", {
+    body: JSON.stringify({ navigations, url: page.url() }),
+    contentType: "application/json",
+  });
 });
