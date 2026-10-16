@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { cacheLife, cacheTag } from "next/cache";
 import { publishableRates } from "./quality";
 import { providers } from "./catalog";
 import type { ProviderState, Rate, Snapshot } from "./types";
@@ -40,10 +41,20 @@ export function unavailableSnapshot(): Snapshot {
   };
 }
 
+async function cachedProviderBatch(ids: string[]) {
+  "use cache: remote";
+  cacheTag("gpu-market");
+  cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
+  const rows = await database().query(
+    "SELECT provider_id, checked_at, observed_at, status, message, rates FROM provider_state WHERE provider_id = ANY($1::text[])",
+    [ids],
+    { fetchOptions: { signal: AbortSignal.timeout(20000) } },
+  );
+  return { rows, loadedAt: new Date().toISOString() };
+}
+
 export async function getSnapshot(): Promise<Snapshot> {
   try {
-    const sql = database();
-    const signal = AbortSignal.timeout(20000);
     const collectibleProviders = providers.filter(
       (provider) => provider.trackingScope === "gpu-hourly",
     );
@@ -52,18 +63,11 @@ export async function getSnapshot(): Promise<Snapshot> {
       (_, i) =>
         collectibleProviders.slice(i * 25, i * 25 + 25).map((p) => p.id),
     );
-    const batches = await Promise.all(
-      groups.map((ids) =>
-        sql.query(
-          "SELECT provider_id, checked_at, observed_at, status, message, rates FROM provider_state WHERE provider_id = ANY($1::text[])",
-          [ids],
-          { fetchOptions: { signal } },
-        ),
-      ),
-    );
-    const rows = new Map(batches.flat().map((row) => [row.provider_id, row]));
+    const batches = await Promise.all(groups.map(cachedProviderBatch));
+    const rows = new Map(batches.flatMap((batch) => batch.rows)
+      .map((row) => [row.provider_id, row]));
     const snapshot: Snapshot = {
-      loadedAt: new Date().toISOString(),
+      loadedAt: batches.map((batch) => batch.loadedAt).sort()[0],
       providers: providers.map((p) => {
         if (p.trackingScope === "inference-api")
           return {

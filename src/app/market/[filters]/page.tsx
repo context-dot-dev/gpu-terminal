@@ -5,6 +5,7 @@ import { marketQuery } from "@/lib/market-filters";
 import { initialMarketHistory } from "@/lib/market-history";
 
 export const ensureStatic = "navigation";
+export const instant = false;
 
 export function generateStaticParams() {
   return [

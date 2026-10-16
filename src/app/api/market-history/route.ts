@@ -1,5 +1,5 @@
 import {
-  cachedMarketHistory,
+  getMarketHistory,
   historyWindows as windows,
 } from "@/lib/market-history";
 import { providers } from "@/lib/catalog";
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const history = await cachedMarketHistory(
+    const history = await getMarketHistory(
       [...ids].sort(),
       requestedProviders
         ? [...new Set(requestedProviders)].sort()
@@ -65,8 +65,7 @@ export async function GET(request: Request) {
     );
     return Response.json(history, {
       headers: {
-        "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",
-        "CDN-Cache-Control": "public, s-maxage=3600, stale-while-revalidate=3600",
+        "Cache-Control": "no-store",
       },
     });
   } catch {

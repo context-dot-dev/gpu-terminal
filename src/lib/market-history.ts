@@ -1,5 +1,5 @@
-import { cacheLife } from "next/cache";
-import { database } from "./db";
+import { cacheLife, cacheTag } from "next/cache";
+import { database, getSnapshot } from "./db";
 import type { MarketHistory, Snapshot } from "./types";
 import { readFilters } from "./market-filters";
 import {
@@ -17,6 +17,38 @@ export const historyWindows = {
   "1y": 8760,
 } as const;
 
+async function cachedOfferHistory(id: string, start: string, end: string) {
+  "use cache: remote";
+  cacheTag("gpu-market");
+  cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
+  const snapshot = await getSnapshot();
+  const provider = snapshot?.providers.find((p) => p.rates.some((r) => r.id === id));
+  const until = end
+    ? new Date(Math.min(Date.now(), Date.parse(end) + 86400000)).toISOString()
+    : new Date().toISOString();
+  const rows = await database().query(
+    `SELECT o.provider_id, o.observed_at AS at, r->>'hourly' AS hourly,
+      r->>'currency' AS currency
+     FROM observations o CROSS JOIN LATERAL jsonb_array_elements(o.rates) r
+     WHERE ($1::text IS NULL OR o.provider_id = $1)
+       AND o.observed_at >= $2::timestamptz AND o.observed_at <= $3::timestamptz
+       AND r->>'id' = $4
+     ORDER BY o.observed_at DESC LIMIT 2001`,
+    [provider?.id ?? null, start || "1970-01-01", until, id],
+    { fetchOptions: { signal: AbortSignal.timeout(15000) } },
+  );
+  return {
+    loadedAt: new Date().toISOString(),
+    points: rows.reverse().filter((row) => Number.isFinite(Number(row.hourly)) && Number(row.hourly) > 0)
+      .map((row) => ({
+        providerId: row.provider_id as string,
+        at: row.at as string,
+        hourly: Number(row.hourly),
+        currency: row.currency as string,
+      })),
+  };
+}
+
 export async function cachedMarketHistory(
   ids: string[],
   providerIds: string[],
@@ -25,7 +57,18 @@ export async function cachedMarketHistory(
   end: string,
 ): Promise<MarketHistory> {
   "use cache";
-  cacheLife({ stale: 300, revalidate: 3600, expire: 86400 });
+  cacheTag("gpu-market");
+  cacheLife({ stale: 300, revalidate: 1800, expire: 86400 });
+  return getMarketHistory(ids, providerIds, range, start, end);
+}
+
+export async function getMarketHistory(
+  ids: string[],
+  providerIds: string[],
+  range: string,
+  start: string,
+  end: string,
+): Promise<MarketHistory> {
   const now = Date.now();
   const since =
     range === "custom"
@@ -40,38 +83,27 @@ export async function cachedMarketHistory(
   const until = new Date(
     range === "custom" ? Math.min(now, Date.parse(end) + 86400000) : now,
   ).toISOString();
-  const rows = await database().query(
-    `WITH points AS (
-        SELECT r->>'id' AS id, o.observed_at AS at, r->>'hourly' AS hourly,
-          r->>'currency' AS currency,
-          row_number() OVER (PARTITION BY r->>'id' ORDER BY o.observed_at DESC) AS position
-        FROM observations o CROSS JOIN LATERAL jsonb_array_elements(o.rates) r
-        WHERE o.provider_id = ANY($1::text[]) AND o.observed_at >= $2::timestamptz
-          AND o.observed_at < $4::timestamptz AND r->>'id' = ANY($3::text[])
-      ) SELECT id, at, hourly, currency FROM points WHERE position <= 2001 ORDER BY at`,
-    [providerIds, since, ids, until],
-    { fetchOptions: { signal: AbortSignal.timeout(15000) } },
-  );
+  const histories: Awaited<ReturnType<typeof cachedOfferHistory>>[] = [];
+  const pointLimit = Math.min(2000, Math.floor(30000 / Math.max(1, ids.length)));
+  for (let i = 0; i < ids.length; i += 8) {
+    histories.push(...await Promise.all(ids.slice(i, i + 8).map((id) =>
+      cachedOfferHistory(id, range === "custom" ? start : "", range === "custom" ? end : ""),
+    )));
+  }
   return {
     window: { start: since, end: until },
-    series: ids.map((id) => ({
-      id,
-      truncated: rows.filter((row) => row.id === id).length > 2000,
-      points: rows
-        .filter(
-          (row) =>
-            row.id === id &&
-            Number.isFinite(Number(row.hourly)) &&
-            Number(row.hourly) > 0,
-        )
-        .slice(-2000)
-        .map((row) => ({
-          at: row.at,
-          hourly: Number(row.hourly),
-          currency: row.currency,
-        })),
-    })),
-    loadedAt: new Date().toISOString(),
+    series: ids.map((id, index) => {
+      const points = histories[index].points.filter((point) =>
+        providerIds.includes(point.providerId) &&
+        Date.parse(point.at) >= Date.parse(since) && Date.parse(point.at) <= Date.parse(until),
+      );
+      return {
+        id,
+        truncated: points.length > pointLimit,
+        points: points.slice(-pointLimit).map(({ at, hourly, currency }) => ({ at, hourly, currency })),
+      };
+    }),
+    loadedAt: histories.map((history) => history.loadedAt).sort()[0] ?? new Date().toISOString(),
   };
 }
 

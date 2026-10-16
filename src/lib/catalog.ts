@@ -591,11 +591,9 @@ export const providers: Provider[] = [
       name,
       url,
       kind,
-      intervalMinutes: ["vast", "runpod", "io", "spheron"].includes(id)
-        ? 15
-        : kind === "Marketplace"
-          ? 60
-          : 360,
+      intervalMinutes: ["vast", "runpod", "io", "spheron", "runcrate"].includes(id)
+        ? 30
+        : 60,
       trackingScope: "gpu-hourly" as const,
       ...(aliases ? { aliases } : {}),
     };

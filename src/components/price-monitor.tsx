@@ -995,7 +995,7 @@ export function PriceMonitor({
                 ? "History refresh failed. Showing previously received observations. "
                 : ""}
               {currentResult?.data?.series.some((s) => s.truncated)
-                ? "Latest 2,000 observations per offer shown; earlier retained history omitted. "
+                ? "Recent observations shown; earlier retained history omitted. Narrow the date range or provider selection for more detail. "
                 : ""}
               {!hasHistory
                 ? "Current quote is from the latest source observation; no historical trend is inferred."
