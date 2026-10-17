@@ -129,7 +129,15 @@ function resolveHistory(
     )
       continue;
     const series = requested.map((id) => data.series.find((s) => s.id === id));
-    if (series.some((s) => !s || s.truncated)) continue;
+    if (
+      series.some(
+        (s) =>
+          !s ||
+          (s.truncated &&
+            !s.points.some((point) => Date.parse(point.at) < start)),
+      )
+    )
+      continue;
     return {
       error: results[requestKey]?.error,
       data: {
@@ -140,6 +148,7 @@ function resolveHistory(
         },
         series: series.map((s) => ({
           ...s!,
+          truncated: false,
           points: s!.points.filter(
             (p) => Date.parse(p.at) >= start && Date.parse(p.at) < end,
           ),
