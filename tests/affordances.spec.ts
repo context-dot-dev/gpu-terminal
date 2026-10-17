@@ -60,13 +60,16 @@ test("provider links navigate while GPU buttons select without moving the worksp
 test("controls give hover feedback and coverage uses native provider links", async ({
   page,
 }, info) => {
+  const initialRefresh = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/prices");
   await page.goto("/?family=H100");
+  await initialRefresh;
   const refresh = page.getByRole("button", { name: "Refresh", exact: true });
   await expect(refresh).toBeEnabled();
   await page.mouse.move(0, 0);
   const before = await refresh.evaluate(
     (el) => getComputedStyle(el).backgroundColor,
   );
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
   const bounds = await refresh.boundingBox();
   await refresh.hover();
   await expect
