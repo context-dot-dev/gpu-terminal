@@ -26,17 +26,20 @@ test("GPU ticker moves left, loops, pauses and keeps navigation usable", async (
   expect(await animationTime()).toBe(stopped);
   await page.mouse.move(700, 200);
   const groups = track.locator(".market-ticker-group");
-  const widths = await groups.evaluateAll((nodes) =>
-    nodes.map((node) => node.getBoundingClientRect().width),
-  );
-  expect(widths).toHaveLength(2);
-  expect(widths[0]).toBeCloseTo(widths[1], 1);
-  await track.evaluate((element) => {
+  const { widths, end } = await track.evaluate(async (element) => {
     const animation = element.getAnimations()[0];
     animation.pause();
+    await animation.ready;
     animation.currentTime = 99_999;
+    return {
+      widths: [...element.querySelectorAll(".market-ticker-group")].map(
+        (group) => group.getBoundingClientRect().width,
+      ),
+      end: new DOMMatrix(getComputedStyle(element).transform).m41,
+    };
   });
-  const end = await x();
+  expect(widths).toHaveLength(2);
+  expect(widths[0]).toBeCloseTo(widths[1], 1);
   expect(end).toBeCloseTo(-widths[0], 0);
   const copy = groups.nth(1).locator('[data-family="H200"]');
   await copy.click();
