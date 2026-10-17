@@ -241,6 +241,52 @@ test("truncated history cannot stand in for a complete shorter interval", async 
   ).toBeVisible();
 });
 
+test("truncated history still supplies a completely retained shorter interval", async ({
+  page,
+}, info) => {
+  await setup(page);
+  await page.route("**/api/market-history?*", (route) => {
+    const params = new URL(route.request().url()).searchParams;
+    if (params.get("range") !== "7d")
+      return route.fulfill({ status: 503, json: { error: "Unavailable" } });
+    const result = history(params.get("ids")!);
+    return route.fulfill({
+      json: {
+        ...result,
+        window: {
+          start: new Date(Date.parse(now) - 7 * 86400000).toISOString(),
+          end: now,
+        },
+        series: result.series.map((series) => ({
+          ...series,
+          truncated: true,
+          points: [48, 1].map((hours) => ({
+            ...series.points[0],
+            at: new Date(Date.parse(now) - hours * 3600000).toISOString(),
+          })),
+        })),
+      },
+    });
+  });
+  await page.goto("/");
+  const card = page.locator('[aria-label="GPU price monitoring"]');
+  await card.getByRole("button", { name: "Selected offer", exact: true }).click();
+  await expect(card).toContainText("2 stored observations");
+  const unavailable = page.waitForResponse((response) =>
+    response.url().includes("/api/market-history?") &&
+    new URL(response.url()).searchParams.get("range") === "24h" &&
+    response.status() === 503,
+  );
+  await card.getByRole("button", { name: "Last 24 hours" }).click();
+  await unavailable;
+  await expect(card).toContainText("1 stored observations");
+  await expect(card.getByText("History unavailable", { exact: true })).toHaveCount(0);
+  await info.attach("retained-shorter-history.png", {
+    body: await page.screenshot(),
+    contentType: "image/png",
+  });
+});
+
 test("history recovers from a transient request and can be retried after a persistent failure", async ({ page }, info) => {
   await setup(page);
   let attempts24h = 0;
