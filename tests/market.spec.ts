@@ -287,14 +287,29 @@ test("cron refuses unauthenticated and forged calls and validates history inputs
 test("collection-method filter preserves source certainty in shared URLs", async ({
   page,
 }) => {
+  const refresh = page.waitForResponse(
+    (response) => new URL(response.url()).pathname === "/api/prices",
+  );
   await page.goto("/?method=Provider+API");
+  const snapshot: Snapshot = await (await refresh).json();
+  const apiOfferIds = new Set(
+    snapshot.providers.flatMap((provider) =>
+      provider.rates
+        .filter((rate) => rate.collectionMethod === "Provider API")
+        .map((rate) => rate.id),
+    ),
+  );
   await expect(
     page.getByRole("combobox", { name: "Collection method", exact: true }),
   ).toContainText("Provider API");
   const rows = page.getByTestId("price-row");
   await expect(rows.first()).toBeVisible();
-  for (const row of await rows.all())
-    await expect(row).toContainText(/AWS|Microsoft Azure/);
+  await expect.poll(async () => {
+    const ids = await rows.evaluateAll((elements) =>
+      elements.map((element) => element.getAttribute("data-offer-id")),
+    );
+    return ids.length > 0 && ids.every((id) => id && apiOfferIds.has(id));
+  }).toBe(true);
 });
 
 test("expanded sources preserve native currency, original billing units and source qualifiers", async ({
