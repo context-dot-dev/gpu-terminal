@@ -2223,7 +2223,7 @@ function MarketDashboard({
               ],
               [
                 "Freshness and collection failures",
-                "AWS currently covers US East (N. Virginia) only; other providers may have partial regional coverage. Vast.ai, Runpod, io.net and Spheron target 15-minute checks; other marketplaces target hourly checks and other rate cards every six hours. A protected scheduler runs every five minutes in bounded batches, so targets can be delayed. Rates become stale after the target interval plus twenty minutes and are hidden by default. Failed checks retain the original observation time; a failure never makes old data fresh. The dashboard polls stored observations every 30 seconds without triggering paid scraping.",
+                "AWS currently covers US East (N. Virginia) only; other providers may have partial regional coverage. Vast.ai, Runpod, io.net and Spheron target 15-minute checks; other marketplaces target hourly checks and other rate cards every six hours. A protected scheduler runs every five minutes in bounded batches, so targets can be delayed. Rates become stale after the target interval plus twenty minutes. All stored offers are shown by default; enable Within refresh window to show only recent observations. Failed checks retain the original observation time; a failure never makes old data fresh. The dashboard polls stored observations every 30 seconds without triggering paid scraping.",
               ],
               [
                 "Coverage has boundaries",
