@@ -202,7 +202,7 @@ test("combined budget and impossible search give honest empty state", async ({
 }) => {
   await page.goto("/?family=H100&totalBudget=0.01");
   await expect(
-    page.getByText("No fresh matching rates", { exact: true }),
+    page.getByText("No matching rates", { exact: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await page

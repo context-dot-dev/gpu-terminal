@@ -25,7 +25,7 @@ export const initialFilters = {
   budget: "",
   currency: "USD",
   exact: false,
-  fresh: true,
+  fresh: false,
   available: false,
   count: "all",
   totalBudget: "",

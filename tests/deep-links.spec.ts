@@ -109,7 +109,7 @@ test("shared market filters and booleans remain intact when switching tabs", asy
     budget: "5",
     currency: "USD",
     exact: "true",
-    fresh: "false",
+    fresh: "true",
     available: "true",
     count: "1",
     totalBudget: "8",
@@ -123,7 +123,7 @@ test("shared market filters and booleans remain intact when switching tabs", asy
   await page.getByRole("tab", { name: "Explore prices", exact: true }).click();
   await expect(
     page.getByRole("checkbox", { name: "Within refresh window" }),
-  ).not.toBeChecked();
+  ).toBeChecked();
   await expect(
     page.getByRole("checkbox", { name: "Exclude “starting at” prices" }),
   ).toBeChecked();

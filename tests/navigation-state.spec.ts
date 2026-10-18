@@ -80,7 +80,7 @@ test("pending unmatched refresh does not claim there are no matching offers", as
     await held;
     await route.fulfill({ status: 503, json: { error: "Fixture outage" } });
   });
-  await page.goto("/?family=H100&budget=0.000000000001");
+  await page.goto("/?family=H100&budget=0.000000000001&fresh=true");
   await expect(
     page.getByRole("button", { name: "Updating", exact: true }),
   ).toBeVisible();
